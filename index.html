@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,7 +27,7 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
 
 .adminBtn{ border:1px solid #29343e; background:#121a23; color:#00a8ff; padding:9px 12px; border-radius:8px; font-size:18px; cursor:pointer; }
 
-/* HERO BANNER WITH SLOW MOTION TRANSITION */
+/* HERO BANNER WITH SMOOTH SLIDE TRANSITION */
 .hero{ 
   height:300px; 
   display:flex; 
@@ -34,8 +35,7 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
   padding:25px 18px; 
   background-position: center;
   background-size: cover;
-  /* Slow Motion కోసం transition 3s పెంచాము */
-  transition: background-image 3s ease-in-out;
+  transition: background-image 1s ease-in-out;
   background-image: linear-gradient(to top,#05070b 5%,transparent 75%),linear-gradient(to right,#05070b,transparent 75%),url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1400&q=80");
 }
 .hero h1{ font-size:32px; margin-bottom:8px; }
@@ -256,7 +256,7 @@ document.getElementById("bannerImage").addEventListener("change", function(){
   reader.readAsDataURL(file);
 });
 
-// BANNER SLIDER LOGIC WITH SLOW MOTION
+// BANNER SLIDER LOGIC
 async function loadBanner(){
   try {
     const result = await db.from("movies")
@@ -272,8 +272,7 @@ async function loadBanner(){
         
         if(bannerList.length > 1){
           if(bannerInterval) clearInterval(bannerInterval);
-          // ప్రతి 6 సెకన్లకు ఒకసారి Slow Motion లో స్లైడ్ మారుతుంది
-          bannerInterval = setInterval(slideNextBanner, 6000);
+          bannerInterval = setInterval(slideNextBanner, 4000);
         }
       }
     }
@@ -292,7 +291,7 @@ function applyBannerImage(url){
   hero.style.backgroundImage = `linear-gradient(to top,#05070b 5%,transparent 75%),linear-gradient(to right,#05070b,transparent 75%),url("${url}")`;
 }
 
-// FIXED BANNER UPLOAD FUNCTION
+// FIXED BANNER UPLOAD FUNCTION (NO NOT-NULL ERRORS)
 async function updateBanner(){
   const file = document.getElementById("bannerImage").files[0];
   if(!file){
@@ -491,4 +490,95 @@ function closeMovie(){
   iframeElement.style.display = "none";
 }
 
-function openLink(){ if(selectedMovie) window.open(selectedMov
+function openLink(){ if(selectedMovie) window.open(selectedMovie.terabox_url, "_blank"); }
+
+function toggleWatchlist(){
+  if(!selectedMovie) return;
+  const index = watchlist.findIndex(m => m.id === selectedMovie.id);
+  if(index === -1){
+    watchlist.push(selectedMovie);
+  } else {
+    watchlist.splice(index, 1);
+  }
+  updateWatchlistBtn();
+  renderWatchlist();
+}
+
+function updateWatchlistBtn(){
+  if(!selectedMovie) return;
+  const exists = watchlist.some(m => m.id === selectedMovie.id);
+  const btn = document.getElementById("watchlistToggleBtn");
+  btn.textContent = exists ? "✓ Added to Watchlist" : "+ Watchlist";
+  btn.style.background = exists ? "#16a34a" : "#29323c";
+}
+
+function renderWatchlist(){
+  const box = document.getElementById("playlistList");
+  if(watchlist.length === 0){
+    box.innerHTML = `<p style="color:#626d77; font-size:13px;">ఏ సినిమాలు ప్లేలిస్ట్‌లో చేర్చలేదు.</p>`;
+    return;
+  }
+  box.innerHTML = "";
+  watchlist.forEach(m => {
+    const item = document.createElement("div");
+    item.className = "playlist-item";
+    item.innerHTML = `
+      <span class="playlist-title">${escapeHTML(m.title)}</span>
+      <button class="delete-btn" onclick="removeFromWatchlist('${m.id}')">Delete</button>
+    `;
+    box.appendChild(item);
+  });
+}
+
+function removeFromWatchlist(id){
+  watchlist = watchlist.filter(m => m.id !== id);
+  renderWatchlist();
+  if(selectedMovie && selectedMovie.id === id) updateWatchlistBtn();
+}
+
+document.getElementById("search").addEventListener("input", function(){
+  const q = this.value.toLowerCase().trim();
+  const sugBox = document.getElementById("suggestions");
+  sugBox.innerHTML = "";
+
+  if(!q){
+    sugBox.style.display = "none";
+    renderMovies();
+    return;
+  }
+
+  const matches = movies.filter(movie => movie.title.toLowerCase().includes(q));
+
+  if(matches.length > 0){
+    sugBox.style.display = "block";
+    matches.forEach(movie => {
+      const item = document.createElement("div");
+      item.className = "suggestion-item";
+      item.textContent = movie.title;
+      item.onclick = function(){
+        openMovie(movie);
+        sugBox.style.display = "none";
+      };
+      sugBox.appendChild(item);
+    });
+  } else {
+    sugBox.style.display = "none";
+  }
+});
+
+document.addEventListener("click", function(e){
+  if(!e.target.closest(".search-container")){
+    document.getElementById("suggestions").style.display = "none";
+  }
+});
+
+function watchFirst(){
+  if(movies.length) openMovie(movies[0]);
+  else alert("Admin Panel open chesi movie add cheyyandi.");
+}
+
+loadBanner();
+loadMovies();
+</script>
+</body>
+</html>
