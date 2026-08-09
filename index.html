@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,18 +17,31 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
 .search-container{ position:relative; width:45%; max-width:240px; }
 .search{ width:100%; padding:9px 12px; border-radius:20px; border:1px solid #29343e; background:#121820; color:white; outline:none; }
 .suggestions-box {
-  position:absolute; top:45px; left:0; width:100%; background:#111820;
-  border:1px solid #29343e; border-radius:10px; max-height:200px;
-  overflow-y:auto; z-index:1000; display:none; box-shadow:0 4px 10px rgba(0,0,0,0.5);
+  position:absolute; top:45px; left:0; width:100%; background:#111820;
+  border:1px solid #29343e; border-radius:10px; max-height:200px;
+  overflow-y:auto; z-index:1000; display:none; box-shadow:0 4px 10px rgba(0,0,0,0.5);
 }
 .suggestion-item { padding:10px 12px; border-bottom:1px solid #1a232d; cursor:pointer; font-size:13px; color:#e1e6eb; }
 .suggestion-item:hover { background:#00a8ff; color:white; }
 
 .adminBtn{ border:1px solid #29343e; background:#121a23; color:#00a8ff; padding:9px 12px; border-radius:8px; font-size:18px; cursor:pointer; }
-.hero{ height:300px; display:flex; align-items:flex-end; padding:25px 18px; background:linear-gradient(to top,#05070b 5%,transparent 75%),linear-gradient(to right,#05070b,transparent 75%),url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1400&q=80") center/cover; }
+
+/* HERO BANNER WITH SLOW MOTION TRANSITION */
+.hero{ 
+  height:300px; 
+  display:flex; 
+  align-items:flex-end; 
+  padding:25px 18px; 
+  background-position: center;
+  background-size: cover;
+  /* Slow Motion కోసం transition 3s పెంచాము */
+  transition: background-image 3s ease-in-out;
+  background-image: linear-gradient(to top,#05070b 5%,transparent 75%),linear-gradient(to right,#05070b,transparent 75%),url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1400&q=80");
+}
 .hero h1{ font-size:32px; margin-bottom:8px; }
 .hero p{ color:#b5bdc7; }
 .hero button{ margin-top:15px; padding:12px 20px; border:0; border-radius:7px; background:#00a8ff; color:white; font-weight:bold; cursor:pointer; }
+
 .section{ padding:20px 14px; }
 .title{ font-size:20px; margin-bottom:14px; }
 .row{ display:flex; gap:13px; overflow-x:auto; scrollbar-width:none; }
@@ -73,13 +85,15 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
 .group label{ display:block; color:#aeb6bf; font-size:13px; margin-bottom:7px; }
 .group input, .group textarea, .group select{ width:100%; padding:12px; background:#111820; color:white; border:1px solid #29343e; border-radius:8px; outline:none; }
 .group textarea{ min-height:80px; }
-.preview{ width:120px; height:180px; object-fit:cover; border-radius:8px; margin-top:10px; display:none; }
-.addBtn{ width:100%; padding:13px; border:0; border-radius:8px; background:#00a8ff; color:white; font-weight:bold; cursor:pointer; }
+.preview, .banner-preview{ width:120px; height:180px; object-fit:cover; border-radius:8px; margin-top:10px; display:none; }
+.banner-preview{ width:100%; height:100px; }
+.addBtn, .updateBannerBtn{ width:100%; padding:13px; border:0; border-radius:8px; background:#00a8ff; color:white; font-weight:bold; cursor:pointer; margin-top:5px; }
 .status{ margin-top:12px; padding:10px; background:#111820; border-radius:7px; color:#aeb6bf; }
 .adminItem{ display:flex; align-items:center; gap:10px; background:#111820; padding:10px; margin-top:10px; border-radius:9px; }
 .adminThumb{ width:55px; height:75px; object-fit:cover; border-radius:5px; }
 .adminInfo{ flex:1; }
 .delete{ background:#e53935; color:white; border:0; padding:8px; border-radius:6px; cursor:pointer; }
+.admin-card-section{ background:#101721; padding:15px; border-radius:10px; border:1px solid #202933; margin-bottom:20px; }
 footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
 </style>
 </head>
@@ -87,103 +101,119 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
 <body>
 
 <header>
-  <div class="logo">HACKO <span>Movies</span></div>
-  <div class="search-container">
-    <input id="search" class="search" placeholder="Search..." autocomplete="off">
-    <div id="suggestions" class="suggestions-box"></div>
-  </div>
-  <button class="adminBtn" onclick="openAdmin()">⚙️</button>
+  <div class="logo">HACKO <span>Movies</span></div>
+  <div class="search-container">
+    <input id="search" class="search" placeholder="Search..." autocomplete="off">
+    <div id="suggestions" class="suggestions-box"></div>
+  </div>
+  <button class="adminBtn" onclick="openAdmin()">⚙️</button>
 </header>
 
-<section class="hero">
-  <div>
-    <h1>HACKO Movies</h1>
-    <p>Watch your favorite movies and videos.</p>
-    <button onclick="watchFirst()">▶ Watch Now</button>
-  </div>
+<section class="hero" id="heroBanner">
+  <div>
+    <h1>HACKO Movies</h1>
+    <p>Watch your favorite movies and videos.</p>
+    <button onclick="watchFirst()">▶ Watch Now</button>
+  </div>
 </section>
 
 <section class="section">
-  <div class="title">🔥 Trending</div>
-  <div id="trending" class="row"></div>
+  <div class="title">🔥 Trending</div>
+  <div id="trending" class="row"></div>
 </section>
 
 <section class="section">
-  <div class="title">🆕 Latest</div>
-  <div id="latest" class="row"></div>
+  <div class="title">🆕 Latest</div>
+  <div id="latest" class="row"></div>
 </section>
 
 <section class="section">
-  <div class="title">⚡ Action</div>
-  <div id="action" class="row"></div>
+  <div class="title">⚡ Action</div>
+  <div id="action" class="row"></div>
 </section>
 
 <!-- PLAYLIST SECTION -->
 <section class="section">
-  <div class="title">📌 My Watchlist / Playlist</div>
-  <div id="playlistList">
-    <p style="color:#626d77; font-size:13px;">ఏ సినిమాలు ప్లేలిస్ట్‌లో చేర్చలేదు.</p>
-  </div>
+  <div class="title">📌 My Watchlist / Playlist</div>
+  <div id="playlistList">
+    <p style="color:#626d77; font-size:13px;">ఏ సినిమాలు ప్లేలిస్ట్‌లో చేర్చలేదు.</p>
+  </div>
 </section>
 
 <footer>© 2026 HACKO Movies</footer>
 
 <!-- HOTSTAR STYLE MOVIE MODAL -->
 <div id="movieModal" class="modal">
-  <div class="modalBox">
-    <button class="close-icon" onclick="closeMovie()">✕</button>
-    
-    <!-- TOP MEDIA AREA (AUTO TRAILER / IMAGE) -->
-    <div class="modalMediaContainer">
-      <img id="modalImage" class="modalImage" src="">
-      <iframe id="modalTrailerFrame" class="modalIframe" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-    </div>
+  <div class="modalBox">
+    <button class="close-icon" onclick="closeMovie()">✕</button>
 
-    <div class="modalContent">
-      <h2 id="modalTitle"></h2>
-      <div class="meta-tags">
-        <span>HD Quality</span>
-        <span id="modalCategory">Movie</span>
-      </div>
-      <p id="modalDescription"></p>
+    <div class="modalMediaContainer">
+      <img id="modalImage" class="modalImage" src="">
+      <iframe id="modalTrailerFrame" class="modalIframe" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
 
-      <div class="action-btns">
-        <button class="btn-action watch-btn" onclick="openLink()">▶ Watch Movie</button>
-        <button class="btn-action watchlist-btn" id="watchlistToggleBtn" onclick="toggleWatchlist()">+ Watchlist</button>
-      </div>
-    </div>
-  </div>
+    <div class="modalContent">
+      <h2 id="modalTitle"></h2>
+      <div class="meta-tags">
+        <span>HD Quality</span>
+        <span id="modalCategory">Movie</span>
+      </div>
+      <p id="modalDescription"></p>
+
+      <div class="action-btns">
+        <button class="btn-action watch-btn" onclick="openLink()">▶ Watch Movie</button>
+        <button class="btn-action watchlist-btn" id="watchlistToggleBtn" onclick="toggleWatchlist()">+ Watchlist</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ADMIN PANEL -->
 <div id="adminPanel" class="admin">
-  <div class="adminHeader">
-    <h2>⚙️ Admin Panel</h2>
-    <button class="delete" style="background:#29323c;" onclick="closeAdmin()">✕ Close</button>
-  </div>
-  <div class="adminContent">
-    <div class="group"><label>Movie Name</label><input id="movieTitle" placeholder="Movie name"></div>
-    <div class="group"><label>Description</label><textarea id="movieDescription" placeholder="Movie description"></textarea></div>
-    <div class="group"><label>TeraBox Link</label><input id="movieLink" placeholder="https://terabox..."></div>
-    <div class="group"><label>YouTube Trailer Link / ID (Optional)</label><input id="movieTrailer" placeholder="https://youtube.com/watch?v=XXXX or Video ID"></div>
-    <div class="group">
-      <label>Category</label>
-      <select id="movieCategory">
-        <option value="trending">🔥 Trending</option>
-        <option value="latest">🆕 Latest</option>
-        <option value="action">⚡ Action</option>
-      </select>
-    </div>
-    <div class="group">
-      <label>Select Poster Photo</label>
-      <input id="movieImage" type="file" accept="image/*">
-      <img id="preview" class="preview">
-    </div>
-    <button class="addBtn" onclick="addMovie()">➕ Upload & Add Movie</button>
-    <div id="status" class="status">Ready</div>
-    <h3 style="margin-top:30px">🎬 Movies</h3>
-    <div id="adminMovies"></div>
-  </div>
+  <div class="adminHeader">
+    <h2>⚙️ Admin Panel</h2>
+    <button class="delete" style="background:#29323c;" onclick="closeAdmin()">✕ Close</button>
+  </div>
+  <div class="adminContent">
+    
+    <!-- BANNER EDIT SECTION -->
+    <div class="admin-card-section">
+      <h3 style="margin-bottom:12px; color:#00a8ff;">🖼️ Interface Banner Edit</h3>
+      <div class="group">
+        <label>Select New Hero Banner Image</label>
+        <input id="bannerImage" type="file" accept="image/*">
+        <img id="bannerPreview" class="banner-preview">
+      </div>
+      <button class="updateBannerBtn" onclick="updateBanner()">🖼️ Add Banner Image</button>
+    </div>
+
+    <!-- MOVIE ADD SECTION -->
+    <div class="admin-card-section">
+      <h3 style="margin-bottom:12px; color:#00a8ff;">🎬 Add Movie</h3>
+      <div class="group"><label>Movie Name</label><input id="movieTitle" placeholder="Movie name"></div>
+      <div class="group"><label>Description</label><textarea id="movieDescription" placeholder="Movie description"></textarea></div>
+      <div class="group"><label>TeraBox Link</label><input id="movieLink" placeholder="https://terabox..."></div>
+      <div class="group"><label>YouTube Trailer Link / ID (Optional)</label><input id="movieTrailer" placeholder="https://youtube.com/watch?v=XXXX or Video ID"></div>
+      <div class="group">
+        <label>Category</label>
+        <select id="movieCategory">
+          <option value="trending">🔥 Trending</option>
+          <option value="latest">🆕 Latest</option>
+          <option value="action">⚡ Action</option>
+        </select>
+      </div>
+      <div class="group">
+        <label>Select Poster Photo</label>
+        <input id="movieImage" type="file" accept="image/*">
+        <img id="preview" class="preview">
+      </div>
+      <button class="addBtn" onclick="addMovie()">➕ Upload & Add Movie</button>
+    </div>
+
+    <div id="status" class="status">Ready</div>
+    <h3 style="margin-top:30px">🎬 Movies List</h3>
+    <div id="adminMovies"></div>
+  </div>
 </div>
 
 <script>
@@ -195,272 +225,270 @@ let movies = [];
 let selectedMovie = null;
 let watchlist = [];
 
+let bannerList = [];
+let currentBannerIndex = 0;
+let bannerInterval = null;
+
 function openAdmin(){ document.getElementById("adminPanel").style.display="block"; }
 function closeAdmin(){ document.getElementById("adminPanel").style.display="none"; }
 
 document.getElementById("movieImage").addEventListener("change", function(){
-  const file = this.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e){
-    const preview = document.getElementById("preview");
-    preview.src = e.target.result;
-    preview.style.display = "block";
-  };
-  reader.readAsDataURL(file);
+  const file = this.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const preview = document.getElementById("preview");
+    preview.src = e.target.result;
+    preview.style.display = "block";
+  };
+  reader.readAsDataURL(file);
 });
 
+document.getElementById("bannerImage").addEventListener("change", function(){
+  const file = this.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const preview = document.getElementById("bannerPreview");
+    preview.src = e.target.result;
+    preview.style.display = "block";
+  };
+  reader.readAsDataURL(file);
+});
+
+// BANNER SLIDER LOGIC WITH SLOW MOTION
+async function loadBanner(){
+  try {
+    const result = await db.from("movies")
+      .select("hero_banner")
+      .not("hero_banner", "is", null)
+      .order("created_at", {ascending: false});
+
+    if (result.data && result.data.length > 0) {
+      bannerList = result.data.map(item => item.hero_banner).filter(Boolean);
+      
+      if(bannerList.length > 0){
+        applyBannerImage(bannerList[0]);
+        
+        if(bannerList.length > 1){
+          if(bannerInterval) clearInterval(bannerInterval);
+          // ప్రతి 6 సెకన్లకు ఒకసారి Slow Motion లో స్లైడ్ మారుతుంది
+          bannerInterval = setInterval(slideNextBanner, 6000);
+        }
+      }
+    }
+  } catch(e) {
+    console.log("Banner loading error:", e);
+  }
+}
+
+function slideNextBanner(){
+  currentBannerIndex = (currentBannerIndex + 1) % bannerList.length;
+  applyBannerImage(bannerList[currentBannerIndex]);
+}
+
+function applyBannerImage(url){
+  const hero = document.getElementById("heroBanner");
+  hero.style.backgroundImage = `linear-gradient(to top,#05070b 5%,transparent 75%),linear-gradient(to right,#05070b,transparent 75%),url("${url}")`;
+}
+
+// FIXED BANNER UPLOAD FUNCTION
+async function updateBanner(){
+  const file = document.getElementById("bannerImage").files[0];
+  if(!file){
+    alert("దయచేసి క్రొత్త బ్యానర్ ఇమేజ్‌ని ఎంచుకోండి.");
+    return;
+  }
+
+  try {
+    document.getElementById("status").textContent = "Uploading banner...";
+    const extension = file.name.split(".").pop();
+    const filename = "hero-banner-" + Date.now() + "." + extension;
+
+    const upload = await db.storage.from("posters").upload(filename, file, {upsert: true});
+    if(upload.error) throw upload.error;
+
+    const bannerUrl = db.storage.from("posters").getPublicUrl(filename).data.publicUrl;
+    
+    document.getElementById("status").textContent = "Saving to Database...";
+
+    const insertResult = await db.from("movies").insert({
+      title: "Hero Banner Config",
+      thumbnail_url: bannerUrl,
+      hero_banner: bannerUrl,
+      terabox_url: "#",
+      category: "banner"
+    });
+
+    if(insertResult.error) throw insertResult.error;
+
+    document.getElementById("status").textContent = "✅ Banner added to Slideshow!";
+    document.getElementById("bannerImage").value = "";
+    document.getElementById("bannerPreview").style.display = "none";
+    await loadBanner();
+  } catch(error) {
+    console.error(error);
+    document.getElementById("status").textContent = "❌ " + error.message;
+  }
+}
+
 async function loadMovies(){
-  const result = await db.from("movies").select("*").order("created_at", {ascending:false});
-  if(result.error){
-    console.log(result.error);
-    document.getElementById("status").textContent = "Database: " + result.error.message;
-    return;
-  }
-  movies = result.data || [];
-  renderMovies();
+  const result = await db.from("movies").select("*").order("created_at", {ascending:false});
+  if(result.error){
+    console.log(result.error);
+    document.getElementById("status").textContent = "Database: " + result.error.message;
+    return;
+  }
+  movies = (result.data || []).filter(m => m.category !== "banner");
+  renderMovies();
 }
 
 function renderMovies(){
-  document.getElementById("trending").innerHTML = "";
-  document.getElementById("latest").innerHTML = "";
-  document.getElementById("action").innerHTML = "";
+  document.getElementById("trending").innerHTML = "";
+  document.getElementById("latest").innerHTML = "";
+  document.getElementById("action").innerHTML = "";
 
-  movies.forEach(movie => {
-    const card = createCard(movie);
-    if(movie.category === "trending") document.getElementById("trending").appendChild(card);
-    if(movie.category === "latest") document.getElementById("latest").appendChild(card);
-    if(movie.category === "action") document.getElementById("action").appendChild(card);
-  });
-  renderAdmin();
-  renderWatchlist();
+  movies.forEach(movie => {
+    const card = createCard(movie);
+    if(movie.category === "trending") document.getElementById("trending").appendChild(card);
+    if(movie.category === "latest") document.getElementById("latest").appendChild(card);
+    if(movie.category === "action") document.getElementById("action").appendChild(card);
+  });
+  renderAdmin();
+  renderWatchlist();
 }
 
 function createCard(movie){
-  const card = document.createElement("div");
-  card.className = "movie";
-  card.onclick = function(){ openMovie(movie); };
-  card.innerHTML = `
-    <img class="poster" src="${movie.thumbnail_url}" loading="lazy">
-    <div class="movieName">${escapeHTML(movie.title)}</div>
-    <div class="movieMeta">HD • ${escapeHTML(movie.category)}</div>
-  `;
-  return card;
+  const card = document.createElement("div");
+  card.className = "movie";
+  card.onclick = function(){ openMovie(movie); };
+  card.innerHTML = `
+    <img class="poster" src="${movie.thumbnail_url}" loading="lazy">
+    <div class="movieName">${escapeHTML(movie.title)}</div>
+    <div class="movieMeta">HD • ${escapeHTML(movie.category)}</div>
+  `;
+  return card;
 }
 
 function escapeHTML(text){
-  return String(text||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+  return String(text||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
 }
 
 async function addMovie(){
-  const title = document.getElementById("movieTitle").value.trim();
-  const description = document.getElementById("movieDescription").value.trim();
-  const link = document.getElementById("movieLink").value.trim();
-  const trailer = document.getElementById("movieTrailer").value.trim();
-  const category = document.getElementById("movieCategory").value;
-  const file = document.getElementById("movieImage").files[0];
+  const title = document.getElementById("movieTitle").value.trim();
+  const description = document.getElementById("movieDescription").value.trim();
+  const link = document.getElementById("movieLink").value.trim();
+  const trailer = document.getElementById("movieTrailer").value.trim();
+  const category = document.getElementById("movieCategory").value;
+  const file = document.getElementById("movieImage").files[0];
 
-  if(!title || !link || !file){
-    alert("దయచేసి సమాచారాన్ని మరియు పోస్టర్ ఇమేజ్‌ని ఎంటర్ చేయండి");
-    return;
-  }
+  if(!title || !link || !file){
+    alert("దయచేసి సమాచారాన్ని మరియు పోస్టర్ ఇమేజ్‌ని ఎంటర్ చేయండి");
+    return;
+  }
 
-  try{
-    document.getElementById("status").textContent = "Uploading poster...";
-    const extension = file.name.split(".").pop();
-    const filename = Date.now() + "." + extension;
+  try{
+    document.getElementById("status").textContent = "Uploading poster...";
+    const extension = file.name.split(".").pop();
+    const filename = Date.now() + "." + extension;
 
-    const upload = await db.storage.from("posters").upload(filename, file, {upsert:false});
-    if(upload.error) throw upload.error;
+    const upload = await db.storage.from("posters").upload(filename, file, {upsert:false});
+    if(upload.error) throw upload.error;
 
-    const publicURL = db.storage.from("posters").getPublicUrl(filename).data.publicUrl;
+    const publicURL = db.storage.from("posters").getPublicUrl(filename).data.publicUrl;
 
-    document.getElementById("status").textContent = "Saving movie...";
-    const result = await db.from("movies").insert({
-      title: title,
-      description: description,
-      thumbnail_url: publicURL,
-      terabox_url: link,
-      trailer_url: trailer,
-      category: category
-    });
+    document.getElementById("status").textContent = "Saving movie...";
+    const result = await db.from("movies").insert({
+      title: title,
+      description: description,
+      thumbnail_url: publicURL,
+      terabox_url: link,
+      trailer_url: trailer,
+      category: category
+    });
 
-    if(result.error) throw result.error;
+    if(result.error) throw result.error;
 
-    document.getElementById("status").textContent = "✅ Movie added!";
-    document.getElementById("movieTitle").value = "";
-    document.getElementById("movieDescription").value = "";
-    document.getElementById("movieLink").value = "";
-    document.getElementById("movieTrailer").value = "";
-    document.getElementById("movieImage").value = "";
-    document.getElementById("preview").style.display = "none";
+    document.getElementById("status").textContent = "✅ Movie added!";
+    document.getElementById("movieTitle").value = "";
+    document.getElementById("movieDescription").value = "";
+    document.getElementById("movieLink").value = "";
+    document.getElementById("movieTrailer").value = "";
+    document.getElementById("movieImage").value = "";
+    document.getElementById("preview").style.display = "none";
 
-    await loadMovies();
-  }catch(error){
-    console.error(error);
-    document.getElementById("status").textContent = "❌ " + error.message;
-  }
+    await loadMovies();
+  }catch(error){
+    console.error(error);
+    document.getElementById("status").textContent = "❌ " + error.message;
+  }
 }
 
 function renderAdmin(){
-  const box = document.getElementById("adminMovies");
-  box.innerHTML = "";
-  movies.forEach(movie => {
-    const item = document.createElement("div");
-    item.className = "adminItem";
-    item.innerHTML = `
-      <img class="adminThumb" src="${movie.thumbnail_url}">
-      <div class="adminInfo">
-        <strong>${escapeHTML(movie.title)}</strong><br>
-        <small>${escapeHTML(movie.category)}</small>
-      </div>
-      <button class="delete" onclick="deleteMovie('${movie.id}')">Delete</button>
-    `;
-    box.appendChild(item);
-  });
+  const box = document.getElementById("adminMovies");
+  box.innerHTML = "";
+  movies.forEach(movie => {
+    const item = document.createElement("div");
+    item.className = "adminItem";
+    item.innerHTML = `
+      <img class="adminThumb" src="${movie.thumbnail_url}">
+      <div class="adminInfo">
+        <strong>${escapeHTML(movie.title)}</strong><br>
+        <small>${escapeHTML(movie.category)}</small>
+      </div>
+      <button class="delete" onclick="deleteMovie('${movie.id}')">Delete</button>
+    `;
+    box.appendChild(item);
+  });
 }
 
 async function deleteMovie(id){
-  if(!confirm("Delete this movie?")) return;
-  const result = await db.from("movies").delete().eq("id", id);
-  if(result.error){ alert(result.error.message); return; }
-  await loadMovies();
+  if(!confirm("Delete this movie?")) return;
+  const result = await db.from("movies").delete().eq("id", id);
+  if(result.error){ alert(result.error.message); return; }
+  await loadMovies();
 }
 
-/* HOTSTAR POPUP WITH AUTOMATIC TRAILER PLAYER AT TOP */
 function openMovie(movie){
-  selectedMovie = movie;
-  document.getElementById("modalTitle").textContent = movie.title;
-  document.getElementById("modalCategory").textContent = movie.category || "Movie";
-  document.getElementById("modalDescription").textContent = movie.description || "No description available.";
-  
-  const imgElement = document.getElementById("modalImage");
-  const iframeElement = document.getElementById("modalTrailerFrame");
+  selectedMovie = movie;
+  document.getElementById("modalTitle").textContent = movie.title;
+  document.getElementById("modalCategory").textContent = movie.category || "Movie";
+  document.getElementById("modalDescription").textContent = movie.description || "No description available.";
+  
+  const imgElement = document.getElementById("modalImage");
+  const iframeElement = document.getElementById("modalTrailerFrame");
 
-  let rawTrailer = movie.trailer_url || "";
-  let youtubeId = "";
+  let rawTrailer = movie.trailer_url || "";
+  let youtubeId = "";
 
-  if(rawTrailer.includes("v=")){
-    youtubeId = rawTrailer.split("v=")[1].split("&")[0];
-  } else if(rawTrailer.includes("youtu.be/")){
-    youtubeId = rawTrailer.split("youtu.be/")[1].split("?")[0];
-  } else {
-    youtubeId = rawTrailer.trim();
-  }
+  if(rawTrailer.includes("v=")){
+    youtubeId = rawTrailer.split("v=")[1].split("&")[0];
+  } else if(rawTrailer.includes("youtu.be/")){
+    youtubeId = rawTrailer.split("youtu.be/")[1].split("?")[0];
+  } else {
+    youtubeId = rawTrailer.trim();
+  }
 
-  // ట్రైలర్ ఉంటే ఇమేజ్ ప్లేస్‌లో యూట్యూబ్ ప్లేయర్ ఆటోమేటిక్‌గా ఓపెన్ అవుతుంది
-  if(youtubeId){
-    imgElement.style.display = "none";
-    iframeElement.style.display = "block";
-    iframeElement.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=1`;
-  } else {
-    iframeElement.style.display = "none";
-    iframeElement.src = "";
-    imgElement.style.display = "block";
-    imgElement.src = movie.thumbnail_url;
-  }
+  if(youtubeId){
+    imgElement.style.display = "none";
+    iframeElement.style.display = "block";
+    iframeElement.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=1`;
+  } else {
+    iframeElement.style.display = "none";
+    iframeElement.src = "";
+    imgElement.style.display = "block";
+    imgElement.src = movie.thumbnail_url;
+  }
 
-  updateWatchlistBtn();
-  document.getElementById("movieModal").style.display = "flex";
+  updateWatchlistBtn();
+  document.getElementById("movieModal").style.display = "flex";
 }
 
 function closeMovie(){ 
-  document.getElementById("movieModal").style.display = "none"; 
-  const iframeElement = document.getElementById("modalTrailerFrame");
-  iframeElement.src = "";
-  iframeElement.style.display = "none";
+  document.getElementById("movieModal").style.display = "none"; 
+  const iframeElement = document.getElementById("modalTrailerFrame");
+  iframeElement.src = "";
+  iframeElement.style.display = "none";
 }
 
-function openLink(){ if(selectedMovie) window.open(selectedMovie.terabox_url, "_blank"); }
-
-/* WATCHLIST LOGIC */
-function toggleWatchlist(){
-  if(!selectedMovie) return;
-  const index = watchlist.findIndex(m => m.id === selectedMovie.id);
-  if(index === -1){
-    watchlist.push(selectedMovie);
-  } else {
-    watchlist.splice(index, 1);
-  }
-  updateWatchlistBtn();
-  renderWatchlist();
-}
-
-function updateWatchlistBtn(){
-  if(!selectedMovie) return;
-  const exists = watchlist.some(m => m.id === selectedMovie.id);
-  const btn = document.getElementById("watchlistToggleBtn");
-  btn.textContent = exists ? "✓ Added to Watchlist" : "+ Watchlist";
-  btn.style.background = exists ? "#16a34a" : "#29323c";
-}
-
-function renderWatchlist(){
-  const box = document.getElementById("playlistList");
-  if(watchlist.length === 0){
-    box.innerHTML = `<p style="color:#626d77; font-size:13px;">ఏ సినిమాలు ప్లేలిస్ట్‌లో చేర్చలేదు.</p>`;
-    return;
-  }
-  box.innerHTML = "";
-  watchlist.forEach(m => {
-    const item = document.createElement("div");
-    item.className = "playlist-item";
-    item.innerHTML = `
-      <span class="playlist-title">${escapeHTML(m.title)}</span>
-      <button class="delete-btn" onclick="removeFromWatchlist('${m.id}')">Delete</button>
-    `;
-    box.appendChild(item);
-  });
-}
-
-function removeFromWatchlist(id){
-  watchlist = watchlist.filter(m => m.id !== id);
-  renderWatchlist();
-  if(selectedMovie && selectedMovie.id === id) updateWatchlistBtn();
-}
-
-/* SEARCH SUGGESTIONS */
-document.getElementById("search").addEventListener("input", function(){
-  const q = this.value.toLowerCase().trim();
-  const sugBox = document.getElementById("suggestions");
-  sugBox.innerHTML = "";
-
-  if(!q){
-    sugBox.style.display = "none";
-    renderMovies();
-    return;
-  }
-
-  const matches = movies.filter(movie => movie.title.toLowerCase().includes(q));
-
-  if(matches.length > 0){
-    sugBox.style.display = "block";
-    matches.forEach(movie => {
-      const item = document.createElement("div");
-      item.className = "suggestion-item";
-      item.textContent = movie.title;
-      item.onclick = function(){
-        openMovie(movie);
-        sugBox.style.display = "none";
-      };
-      sugBox.appendChild(item);
-    });
-  } else {
-    sugBox.style.display = "none";
-  }
-});
-
-document.addEventListener("click", function(e){
-  if(!e.target.closest(".search-container")){
-    document.getElementById("suggestions").style.display = "none";
-  }
-});
-
-function watchFirst(){
-  if(movies.length) openMovie(movies[0]);
-  else alert("Admin Panel open chesi movie add cheyyandi.");
-}
-
-loadMovies();
-</script>
-</body>
-</html>
+function openLink(){ if(selectedMovie) window.open(selectedMov
