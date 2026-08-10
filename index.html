@@ -27,15 +27,45 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
 .menuBtn{ border:1px solid #29343e; background:#121a23; color:#00a8ff; padding:8px 12px; border-radius:8px; font-size:20px; cursor:pointer; }
 
 /* SIDEBAR / DROPDOWN MENU */
-.sidebar{ position:fixed; top:0; right:-280px; width:260px; height:100%; background:#0b0f17; border-left:1px solid #202933; z-index:300; transition:right 0.3s ease; padding:20px; display:flex; flex-direction:column; justify-content:space-between; }
+.sidebar{ position:fixed; top:0; right:-280px; width:260px; height:100%; background:#0b0f17; border-left:1px solid #202933; z-index:300; transition:right 0.3s ease; padding:20px; display:flex; flex-direction:column; justify-content:space-between; overflow-y:auto; }
 .sidebar.active{ right:0; }
 .sidebar-overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:299; display:none; }
 .sidebar-header{ display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #1f2a36; padding-bottom:15px; margin-bottom:15px; }
 .sidebar-menu-list button{ width:100%; text-align:left; background:none; border:none; color:#e1e6eb; padding:12px 10px; border-radius:6px; font-size:15px; cursor:pointer; display:flex; align-items:center; gap:10px; }
 .sidebar-menu-list button:hover{ background:#121820; color:#00a8ff; }
 
+/* SUBMENU BOX STYLES (CATEGORIES, LANGUAGES, YEARS) */
+.category-submenu { 
+  display: none; 
+  flex-wrap: wrap; 
+  gap: 8px; 
+  padding: 10px 0 10px 10px; 
+}
+.category-submenu button { 
+  font-size: 13px !important; 
+  color: white !important; 
+  background: #1e2836; 
+  border-radius: 20px !important; 
+  padding: 8px 16px !important; 
+  width: auto !important; 
+  display: inline-block !important;
+  border: 1px solid #2d3b4e !important;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+.category-submenu button:hover { 
+  background: #00a8ff !important; 
+  color: white !important; 
+  border-color: #00a8ff !important;
+}
+.category-submenu button.active-cat {
+  background: #00a8ff !important;
+  border-color: #00a8ff !important;
+}
+
 .hero{ 
-  height:300px; 
+  height:280px; 
   display:flex; 
   align-items:flex-end; 
   padding:25px 18px; 
@@ -79,7 +109,7 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
 .close-icon{ position:absolute; top:12px; right:12px; background:rgba(0,0,0,0.7); color:white; border:0; width:32px; height:32px; border-radius:50%; font-size:18px; cursor:pointer; z-index:10; }
 .modalContent{ padding:16px; }
 .modalContent h2{ font-size:22px; margin-bottom:6px; }
-.meta-tags{ display:flex; gap:8px; font-size:12px; color:#00a8ff; margin-bottom:12px; }
+.meta-tags{ display:flex; flex-wrap:wrap; gap:8px; font-size:12px; color:#00a8ff; margin-bottom:12px; }
 .meta-tags span{ background:#1a232d; padding:3px 8px; border-radius:4px; color:#aab3bd; text-transform:capitalize; }
 .modalContent p{ color:#aab3bd; line-height:1.4; font-size:13px; margin-bottom:15px; }
 
@@ -105,8 +135,10 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
 .adminContent{ max-width:600px; margin:auto; padding:20px; }
 .group{ margin-bottom:15px; }
 .group label{ display:block; color:#aeb6bf; font-size:13px; margin-bottom:7px; }
-.group input, .group textarea{ width:100%; padding:12px; background:#111820; color:white; border:1px solid #29343e; border-radius:8px; outline:none; }
+.group input, .group textarea, .group select{ width:100%; padding:12px; background:#111820; color:white; border:1px solid #29343e; border-radius:8px; outline:none; }
 .group textarea{ min-height:80px; }
+.form-row{ display:flex; gap:10px; }
+.form-row .group{ flex:1; }
 .preview, .banner-preview{ width:120px; height:180px; object-fit:cover; border-radius:8px; margin-top:10px; display:none; }
 .banner-preview{ width:100%; height:100px; }
 .addBtn, .updateBannerBtn, .changePinBtn{ width:100%; padding:13px; border:0; border-radius:8px; background:#00a8ff; color:white; font-weight:bold; cursor:pointer; margin-top:5px; }
@@ -118,8 +150,6 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
 .accordion-header{ display:flex; justify-content:space-between; align-items:center; padding:15px; cursor:pointer; user-select:none; }
 .accordion-header h3{ font-size:16px; margin:0; }
 .accordion-icon{ font-size:14px; font-weight:bold; transition:transform 0.3s ease; }
-
-/* Default to Hidden */
 .accordion-body{ padding:15px; border-top:1px solid #202933; display:none; }
 
 .admin-search-input{ width:100%; padding:10px 14px; background:#121820; border:1px solid #29343e; color:white; border-radius:8px; margin-bottom:10px; outline:none; font-size:14px; }
@@ -153,49 +183,36 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
       <button style="background:none; border:none; color:white; font-size:20px; cursor:pointer;" onclick="toggleSidebar()">✕</button>
     </div>
     <div class="sidebar-menu-list">
+      <button onclick="showAllHomeMovies()">🏠 Home</button>
+      
+      <!-- CATEGORIES -->
+      <button onclick="toggleSubmenu('categorySubmenu', 'catMenuIcon')">📂 Categories <span id="catMenuIcon" style="margin-left:auto; font-size:12px;">▼</span></button>
+      <div id="categorySubmenu" class="category-submenu"></div>
+
+      <!-- LANGUAGES -->
+      <button onclick="toggleSubmenu('languageSubmenu', 'langMenuIcon')">🌐 Languages <span id="langMenuIcon" style="margin-left:auto; font-size:12px;">▼</span></button>
+      <div id="languageSubmenu" class="category-submenu"></div>
+
+      <!-- YEARS -->
+      <button onclick="toggleSubmenu('yearSubmenu', 'yearMenuIcon')">📅 Years <span id="yearMenuIcon" style="margin-left:auto; font-size:12px;">▼</span></button>
+      <div id="yearSubmenu" class="category-submenu"></div>
+
       <button onclick="openAboutModal()">ℹ️ About Us</button>
     </div>
   </div>
-  <div style="font-size:11px; color:#55606e; text-align:center;">
+  <div style="font-size:11px; color:#55606e; text-align:center; padding-top:20px;">
     HACKO Movies v2.0
   </div>
 </div>
 
-<!-- ABOUT US MODAL (Credits Page with Hidden Secret Admin Access) -->
+<!-- ABOUT US MODAL -->
 <div id="aboutModal" class="modal" style="display:none; z-index:350;">
   <div class="modalBox" style="max-height:85vh; padding:20px; font-style:italic; line-height:1.6; font-size:13px; color:#cccccc; background:#000;">
     <button class="close-icon" onclick="closeAboutModal()">✕</button>
-    
     <h2 style="font-style:normal; margin-bottom:10px; color:white;">Thanks to</h2>
     <hr style="border-color:#333; margin-bottom:15px;">
-
     <p><b>GDBbrian, Thirumalaisamy.K, Josuearisty, XDA Developers</b> - User support.</p><br>
-    
-    <p><b>David Pérez-Villamil</b> - English proofreading.</p>
-    <p><b>Азат Афлитонов, Андрей Зябко</b> (a@zyabko.ru), <b>Timon, Nikita Titov</b> - Russian translation.</p>
-    <p><b>factorymarks, Ryunosuke Tanaka</b> - Japanese translation.</p>
-    <p><b>Felix Baumann, Dieter Matissek, IrealiTY, Kevin Pang</b> - German translation.</p>
-    <p><b>Thomas Michiels, Jules Seigneur</b> - French translation.</p>
-    <p><b>Niko Strijbol, Joost Hermans, Redah Bening, Rijk van Geijtenbeek, adri3650, Rik Demeyer</b> - Dutch translation.</p>
-    <p><b>Michał Gałężewski, godlesplay</b> - Polish translation.</p>
-    <p><b>Hadi Susanto, Ananto Bambang</b> - Indonesian translation.</p>
-    
-    <!-- Secret Admin Trigger Point -->
-    <p><span onclick="openAdminSecretly()" style="cursor:pointer; color:#cccccc;"><b>Walter Pisano</b></span>, <b>Rocco Casadei (Roccobot), Vladi69, 7Dragon</b> - Italian translation.</p>
-    
-    <p><b>Martin Martinov, Dimitar Andonov</b> - Bulgarian translation.</p>
-    <p><b>Kevin Wang, Misha Kruezhev, Mack Zhang, Guangyang LI</b> - Simplified Chinese translation.</p>
-    <p><b>Ondřej Zima, Petr Škaloud, Jakub Dvořák, R3gi, Gebreus</b> - Czech translation.</p>
-    <p><b>Laszlo Tamas, Hevesi János, takraj</b> - Hungarian translation.</p>
-    <p><b>Mateus Eduardo Araujo da Silva, Leandro Sousa, Henrique Baldy, omartins</b> - Portuguese translation.</p>
-    <p><b>David Pérez-Villamil</b> - Spanish translation.</p>
-    <p><b>Spyros</b> - Greek translation.</p>
-    <p><b>Florin Ungureanu, Viorel Cindea Ginju</b> - Romanian translation.</p>
-    <p><b>Fatih Fırıncı, H. Ender AKAR, Can Yıldız</b> - Turkish translation.</p>
-    <p><b>Rostik ZHukoff, Олександр Сенін, Victor</b> - Ukrainian translation.</p>
-    <p><b>Misha Kruezhev, Zon-Wen Deng, 李冠樺</b> - Chinese Traditional translation.</p>
-    <p><b>NGAA, Rasmussch, Johan Mayner Petersen, Boinkjumper</b> - Danish translation.</p>
-    <p><b>Alex Trav., Elyashiv Sabach</b> - Hebrew translation.</p>
+    <p><span onclick="openAdminSecretly()" style="cursor:pointer; color:#cccccc;"><b>Walter Pisano</b></span>, <b>Rocco Casadei (Roccobot)</b> - Italian translation.</p>
   </div>
 </div>
 
@@ -212,13 +229,13 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
 <section class="section">
   <div class="title">📌 My Watchlist / Playlist</div>
   <div id="playlistList">
-    <p style="color:#626d77; font-size:13px;">ఏ సినిమాలు ప్లేలిస్ట్‌లో చేర్చలేదు.</p>
+    <p style="color:#626d77; font-size:13px;">No movies added to watchlist.</p>
   </div>
 </section>
 
 <footer>© 2026 HACKO Movies</footer>
 
-<!-- CATEGORY VIEW ALL PAGE -->
+<!-- FILTER VIEW ALL PAGE -->
 <div id="categoryPage" class="category-page">
   <div class="category-header">
     <button class="back-btn" onclick="closeCategoryPage()">←</button>
@@ -241,6 +258,8 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
       <div class="meta-tags">
         <span>HD Quality</span>
         <span id="modalCategory">Movie</span>
+        <span id="modalLanguage">Telugu</span>
+        <span id="modalYear">2026</span>
       </div>
       <p id="modalDescription"></p>
 
@@ -302,12 +321,24 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
       <div id="secMovie" class="accordion-body">
         <input type="hidden" id="editMovieId">
         <div class="group"><label>Movie Name</label><input id="movieTitle" placeholder="Movie name"></div>
+        
+        <div class="form-row">
+          <div class="group">
+            <label>Language</label>
+            <input id="movieLanguage" placeholder="e.g. Telugu, Hindi, English">
+          </div>
+          <div class="group">
+            <label>Release Year</label>
+            <input id="movieYear" placeholder="e.g. 2026">
+          </div>
+        </div>
+
         <div class="group"><label>Description</label><textarea id="movieDescription" placeholder="Movie description"></textarea></div>
         <div class="group"><label>TeraBox Link</label><input id="movieLink" placeholder="https://terabox..."></div>
         <div class="group"><label>YouTube Trailer Link / ID (Optional)</label><input id="movieTrailer" placeholder="https://youtube.com/watch?v=XXXX or Video ID"></div>
         <div class="group">
           <label>Category Name</label>
-          <input id="movieCategory" placeholder="e.g. Action, Trending Now, Comedy...">
+          <input id="movieCategory" placeholder="e.g. trending, new released, action, horror...">
         </div>
         <div class="group">
           <label>Select Poster Photo</label>
@@ -353,6 +384,18 @@ function toggleSidebar() {
   }
 }
 
+function toggleSubmenu(menuId, iconId){
+  const submenu = document.getElementById(menuId);
+  const icon = document.getElementById(iconId);
+  if(submenu.style.display === "flex"){
+    submenu.style.display = "none";
+    icon.textContent = "▼";
+  } else {
+    submenu.style.display = "flex";
+    icon.textContent = "▲";
+  }
+}
+
 function openAboutModal() {
   toggleSidebar();
   document.getElementById("aboutModal").style.display = "flex";
@@ -369,22 +412,22 @@ function getAdminPin() {
 function openAdminSecretly() {
   closeAboutModal();
   const currentPin = getAdminPin();
-  const enteredPin = prompt("అడ్మిన్ యాక్సెస్ కోసం PIN ఎంటర్ చేయండి:");
+  const enteredPin = prompt("Enter PIN to access Admin Panel:");
   if(enteredPin === currentPin) {
     document.getElementById("adminPanel").style.display = "block";
   } else if(enteredPin !== null) {
-    alert("❌ తప్పు PIN!");
+    alert("❌ Invalid PIN!");
   }
 }
 
 function changeAdminPin() {
   const newPin = document.getElementById("newPinInput").value.trim();
   if(!newPin) {
-    alert("దయచేసి క్రొత్త PIN నమోదు చేయండి.");
+    alert("Please enter a new PIN.");
     return;
   }
   localStorage.setItem("hacko_admin_pin", newPin);
-  alert("✅ PIN విజయవంతంగా మార్చబడింది!");
+  alert("✅ PIN updated successfully!");
   document.getElementById("newPinInput").value = "";
 }
 
@@ -468,7 +511,7 @@ function watchCurrentBanner(){
   } else if(movies.length > 0) {
     openMovie(movies[0]);
   } else {
-    alert("స్క్రీన్‌పై ప్రదర్శించడానికి ఏమీ లేవు.");
+    alert("No movies available to display.");
   }
 }
 
@@ -480,7 +523,7 @@ async function updateBanner(){
   const file = document.getElementById("bannerImage").files[0];
 
   if(!file){
-    alert("దయచేసి క్రొత్త బ్యానర్ ఇమేజ్‌ని ఎంచుకోండి.");
+    alert("Please select a new banner image.");
     return;
   }
 
@@ -542,70 +585,143 @@ async function loadMovies(){
     startBannerSlider();
   }
 
+  renderMenuSubmenus();
   renderMovies();
 }
 
+// DYNAMIC SUBMENUS FOR CATEGORIES, LANGUAGES, AND YEARS
+function renderMenuSubmenus(){
+  // 1. Categories
+  const catSubmenu = document.getElementById("categorySubmenu");
+  catSubmenu.innerHTML = "";
+  const categories = [...new Set(movies.map(m => m.category ? m.category.toLowerCase().trim() : "").filter(Boolean))];
+  categories.forEach(cat => {
+    const btn = document.createElement("button");
+    btn.textContent = cat;
+    btn.onclick = function(){
+      toggleSidebar(); 
+      openFilteredPage('category', cat);
+    };
+    catSubmenu.appendChild(btn);
+  });
+
+  // 2. Languages
+  const langSubmenu = document.getElementById("languageSubmenu");
+  langSubmenu.innerHTML = "";
+  const languages = [...new Set(movies.map(m => m.language ? m.language.toLowerCase().trim() : "").filter(Boolean))];
+  languages.forEach(lang => {
+    const btn = document.createElement("button");
+    btn.textContent = lang;
+    btn.onclick = function(){
+      toggleSidebar(); 
+      openFilteredPage('language', lang);
+    };
+    langSubmenu.appendChild(btn);
+  });
+
+  // 3. Years
+  const yearSubmenu = document.getElementById("yearSubmenu");
+  yearSubmenu.innerHTML = "";
+  const years = [...new Set(movies.map(m => m.year ? m.year.toString().trim() : "").filter(Boolean))];
+  years.sort((a,b) => b - a);
+  years.forEach(yr => {
+    const btn = document.createElement("button");
+    btn.textContent = yr;
+    btn.onclick = function(){
+      toggleSidebar(); 
+      openFilteredPage('year', yr);
+    };
+    yearSubmenu.appendChild(btn);
+  });
+}
+
+function showAllHomeMovies(){
+  toggleSidebar();
+  closeCategoryPage();
+  renderMovies();
+}
+
+/* FIXED CATEGORY ORDER: 1. TRENDING, 2. NEW RELEASED */
 function renderMovies(){
   const container = document.getElementById("dynamicCategoriesContainer");
   container.innerHTML = "";
 
-  const categories = [...new Set(movies.map(m => m.category ? m.category.toLowerCase().trim() : "general"))];
+  let allCategories = [...new Set(movies.map(m => m.category ? m.category.toLowerCase().trim() : "general"))];
 
-  categories.forEach(cat => {
-    const section = document.createElement("section");
-    section.className = "section";
-    
-    const headerDiv = document.createElement("div");
-    headerDiv.className = "section-header";
+  const fixedOrder = ["trending", "new released"];
+  const remainingCategories = allCategories.filter(cat => !fixedOrder.includes(cat));
+  const finalCategories = [...fixedOrder, ...remainingCategories];
 
-    const titleDiv = document.createElement("div");
-    titleDiv.className = "title";
-    titleDiv.textContent = cat;
+  finalCategories.forEach(cat => {
+    const categoryMovies = movies.filter(m => (m.category ? m.category.toLowerCase().trim() : "general") === cat);
 
-    const seeMoreBtn = document.createElement("div");
-    seeMoreBtn.className = "see-more-btn";
-    seeMoreBtn.innerHTML = "›";
-    seeMoreBtn.onclick = function(){ openCategoryPage(cat); };
+    if (categoryMovies.length > 0) {
+      const section = document.createElement("section");
+      section.className = "section";
+      
+      const headerDiv = document.createElement("div");
+      headerDiv.className = "section-header";
 
-    headerDiv.appendChild(titleDiv);
-    headerDiv.appendChild(seeMoreBtn);
-    section.appendChild(headerDiv);
+      const titleDiv = document.createElement("div");
+      titleDiv.className = "title";
+      titleDiv.textContent = cat;
 
-    const rowDiv = document.createElement("div");
-    rowDiv.className = "row";
+      const seeMoreBtn = document.createElement("div");
+      seeMoreBtn.className = "see-more-btn";
+      seeMoreBtn.innerHTML = "›";
+      seeMoreBtn.onclick = function(){ openFilteredPage('category', cat); };
 
-    movies.filter(m => (m.category ? m.category.toLowerCase().trim() : "general") === cat).forEach(movie => {
-      rowDiv.appendChild(createCard(movie));
-    });
+      headerDiv.appendChild(titleDiv);
+      headerDiv.appendChild(seeMoreBtn);
+      section.appendChild(headerDiv);
 
-    section.appendChild(rowDiv);
-    container.appendChild(section);
+      const rowDiv = document.createElement("div");
+      rowDiv.className = "row";
+
+      categoryMovies.forEach(movie => {
+        rowDiv.appendChild(createCard(movie));
+      });
+
+      section.appendChild(rowDiv);
+      container.appendChild(section);
+    }
   });
 
   renderAdmin(allDbItems);
   renderWatchlist();
 }
 
-function openCategoryPage(categoryName){
+function openFilteredPage(filterType, filterValue){
   const page = document.getElementById("categoryPage");
   const titleHead = document.getElementById("categoryPageTitle");
   const grid = document.getElementById("categoryGrid");
 
-  titleHead.textContent = categoryName;
+  titleHead.textContent = `${filterValue} (${filterType})`;
   grid.innerHTML = "";
 
-  const categoryItems = movies.filter(m => (m.category ? m.category.toLowerCase().trim() : "general") === categoryName);
+  let filteredItems = [];
+  if(filterType === 'category'){
+    filteredItems = movies.filter(m => (m.category ? m.category.toLowerCase().trim() : "general") === filterValue);
+  } else if(filterType === 'language'){
+    filteredItems = movies.filter(m => (m.language ? m.language.toLowerCase().trim() : "") === filterValue);
+  } else if(filterType === 'year'){
+    filteredItems = movies.filter(m => (m.year ? m.year.toString().trim() : "") === filterValue);
+  }
 
-  categoryItems.forEach(movie => {
-    const card = document.createElement("div");
-    card.className = "grid-movie";
-    card.onclick = function(){ openMovie(movie); };
-    card.innerHTML = `
-      <img class="grid-poster" src="${movie.thumbnail_url}" loading="lazy">
-      <div class="movieName">${escapeHTML(movie.title)}</div>
-    `;
-    grid.appendChild(card);
-  });
+  if(filteredItems.length === 0){
+    grid.innerHTML = `<p style="color:#78838e; font-size:14px; grid-column:1/-1;">No movies found.</p>`;
+  } else {
+    filteredItems.forEach(movie => {
+      const card = document.createElement("div");
+      card.className = "grid-movie";
+      card.onclick = function(){ openMovie(movie); };
+      card.innerHTML = `
+        <img class="grid-poster" src="${movie.thumbnail_url}" loading="lazy">
+        <div class="movieName">${escapeHTML(movie.title)}</div>
+      `;
+      grid.appendChild(card);
+    });
+  }
 
   page.style.display = "block";
 }
@@ -618,10 +734,14 @@ function createCard(movie){
   const card = document.createElement("div");
   card.className = "movie";
   card.onclick = function(){ openMovie(movie); };
+
+  const langYearText = [movie.language, movie.year].filter(Boolean).join(" • ");
+  const metaText = langYearText ? `${langYearText}` : "HD Movie";
+
   card.innerHTML = `
     <img class="poster" src="${movie.thumbnail_url}" loading="lazy">
     <div class="movieName">${escapeHTML(movie.title)}</div>
-    <div class="movieMeta">HD • ${escapeHTML(movie.category)}</div>
+    <div class="movieMeta">${escapeHTML(metaText)}</div>
   `;
   return card;
 }
@@ -636,6 +756,8 @@ function startEditMovie(id) {
 
   document.getElementById("editMovieId").value = item.id;
   document.getElementById("movieTitle").value = item.title || "";
+  document.getElementById("movieLanguage").value = item.language || "";
+  document.getElementById("movieYear").value = item.year || "";
   document.getElementById("movieDescription").value = item.description || "";
   document.getElementById("movieLink").value = item.terabox_url || "";
   document.getElementById("movieTrailer").value = item.trailer_url || "";
@@ -659,6 +781,8 @@ function startEditMovie(id) {
 function resetMovieForm() {
   document.getElementById("editMovieId").value = "";
   document.getElementById("movieTitle").value = "";
+  document.getElementById("movieLanguage").value = "";
+  document.getElementById("movieYear").value = "";
   document.getElementById("movieDescription").value = "";
   document.getElementById("movieLink").value = "";
   document.getElementById("movieTrailer").value = "";
@@ -677,6 +801,8 @@ function resetMovieForm() {
 async function addOrUpdateMovie(){
   const editId = document.getElementById("editMovieId").value;
   const title = document.getElementById("movieTitle").value.trim();
+  const language = document.getElementById("movieLanguage").value.trim();
+  const year = document.getElementById("movieYear").value.trim();
   const description = document.getElementById("movieDescription").value.trim();
   const link = document.getElementById("movieLink").value.trim();
   const trailer = document.getElementById("movieTrailer").value.trim();
@@ -684,12 +810,12 @@ async function addOrUpdateMovie(){
   const file = document.getElementById("movieImage").files[0];
 
   if(!title || !link){
-    alert("దయచేసి మూవీ టైటిల్ మరియు తేరాబాక్స్ లింక్ తప్పనిసరిగా ఎంటర్ చేయండి.");
+    alert("Please enter movie title and TeraBox link.");
     return;
   }
 
   if(!editId && !file){
-    alert("కొత్త సినిమాను జోడిస్తున్నప్పుడు ఇమేజ్ ఎంచుకోవడం తప్పనిసరి.");
+    alert("Image selection is required when adding a new movie.");
     return;
   }
 
@@ -715,6 +841,8 @@ async function addOrUpdateMovie(){
 
       const updateData = {
         title: title,
+        language: language,
+        year: year,
         description: description,
         thumbnail_url: updatedUrl,
         hero_banner: updatedUrl,
@@ -731,6 +859,8 @@ async function addOrUpdateMovie(){
       document.getElementById("status").textContent = "Saving movie...";
       const { data, error } = await db.from("movies").insert({
         title: title,
+        language: language,
+        year: year,
         description: description,
         thumbnail_url: publicURL,
         hero_banner: publicURL,
@@ -756,18 +886,20 @@ function renderAdmin(itemsList){
   box.innerHTML = "";
   
   if(!itemsList || itemsList.length === 0){
-    box.innerHTML = `<p style="color:#78838e; font-size:13px; margin-top:10px;">ఏ ఐటెమ్‌లు లభించలేదు.</p>`;
+    box.innerHTML = `<p style="color:#78838e; font-size:13px; margin-top:10px;">No items found.</p>`;
     return;
   }
 
   itemsList.forEach(item => {
     const div = document.createElement("div");
     div.className = "adminItem";
+    const subMeta = [item.language, item.year].filter(Boolean).join(" | ");
+    
     div.innerHTML = `
       <img class="adminThumb" src="${item.thumbnail_url}">
       <div class="adminInfo">
         <strong>${escapeHTML(item.title)}</strong><br>
-        <small style="color:#aab3bd;">${item.category === "banner" ? "🖼️ BANNER SLIDE" : escapeHTML(item.category)}</small>
+        <small style="color:#aab3bd;">${item.category === "banner" ? "🖼️ BANNER SLIDE" : escapeHTML(item.category)}${subMeta ? ' • ' + escapeHTML(subMeta) : ''}</small>
       </div>
       <div class="adminBtns">
         <button class="editBtn" onclick="startEditMovie('${item.id}')">Edit</button>
@@ -782,13 +914,15 @@ function filterAdminItems(){
   const query = document.getElementById("adminSearchInput").value.toLowerCase().trim();
   const filtered = allDbItems.filter(item => 
     (item.title && item.title.toLowerCase().includes(query)) || 
-    (item.category && item.category.toLowerCase().includes(query))
+    (item.category && item.category.toLowerCase().includes(query)) ||
+    (item.language && item.language.toLowerCase().includes(query)) ||
+    (item.year && item.year.toLowerCase().includes(query))
   );
   renderAdmin(filtered);
 }
 
 async function deleteItem(id){
-  if(!confirm("ఈ ఐటెమ్‌ను తొలగించాలా?")) return;
+  if(!confirm("Are you sure you want to delete this item?")) return;
   const result = await db.from("movies").delete().eq("id", id);
   if(result.error){ alert(result.error.message); return; }
   await loadMovies();
@@ -798,6 +932,10 @@ function openMovie(movie){
   selectedMovie = movie;
   document.getElementById("modalTitle").textContent = movie.title;
   document.getElementById("modalCategory").textContent = movie.category || "Movie";
+  
+  document.getElementById("modalLanguage").textContent = movie.language || "Telugu";
+  document.getElementById("modalYear").textContent = movie.year || "2026";
+  
   document.getElementById("modalDescription").textContent = movie.description || "No description available.";
   
   const imgElement = document.getElementById("modalImage");
@@ -883,7 +1021,7 @@ function updateWatchlistBtn(){
 function renderWatchlist(){
   const box = document.getElementById("playlistList");
   if(watchlist.length === 0){
-    box.innerHTML = `<p style="color:#626d77; font-size:13px;">ఏ సినిమాలు ప్లేలిస్ట్‌లో చేర్చలేదు.</p>`;
+    box.innerHTML = `<p style="color:#626d77; font-size:13px;">No movies added to watchlist.</p>`;
     return;
   }
   box.innerHTML = "";
