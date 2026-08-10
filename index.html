@@ -8,8 +8,14 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{ box-sizing:border-box; margin:0; padding:0; font-family:Arial,sans-serif; }
+*{ 
+  box-sizing:border-box; 
+  margin:0; 
+  padding:0; 
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important; 
+}
 body{ background:#05070b; color:white; }
+
 header{ height:65px; display:flex; align-items:center; justify-content:space-between; padding:0 14px; background:#080b10; border-bottom:1px solid #202933; position:sticky; top:0; z-index:50; }
 .logo{ color:#00a8ff; font-size:20px; font-weight:bold; }
 .logo span{ color:white; }
@@ -26,7 +32,6 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
 
 .menuBtn{ border:1px solid #29343e; background:#121a23; color:#00a8ff; padding:8px 12px; border-radius:8px; font-size:20px; cursor:pointer; }
 
-/* SIDEBAR / DROPDOWN MENU */
 .sidebar{ position:fixed; top:0; right:-280px; width:260px; height:100%; background:#0b0f17; border-left:1px solid #202933; z-index:300; transition:right 0.3s ease; padding:20px; display:flex; flex-direction:column; justify-content:space-between; overflow-y:auto; }
 .sidebar.active{ right:0; }
 .sidebar-overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:299; display:none; }
@@ -34,7 +39,6 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
 .sidebar-menu-list button{ width:100%; text-align:left; background:none; border:none; color:#e1e6eb; padding:12px 10px; border-radius:6px; font-size:15px; cursor:pointer; display:flex; align-items:center; gap:10px; }
 .sidebar-menu-list button:hover{ background:#121820; color:#00a8ff; }
 
-/* SUBMENU BOX STYLES (CATEGORIES, LANGUAGES, YEARS) */
 .category-submenu { 
   display: none; 
   flex-wrap: wrap; 
@@ -59,23 +63,20 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
   color: white !important; 
   border-color: #00a8ff !important;
 }
-.category-submenu button.active-cat {
-  background: #00a8ff !important;
-  border-color: #00a8ff !important;
-}
 
 .hero{ 
-  height:280px; 
+  min-height:280px; 
   display:flex; 
   align-items:flex-end; 
   padding:25px 18px; 
-  background-position: center;
+  background-position: center center;
   background-size: cover;
-  transition: background-image 1s ease-in-out;
-  background-image: linear-gradient(to top,#05070b 5%,transparent 75%),linear-gradient(to right,#05070b,transparent 75%),url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1400&q=80");
+  background-repeat: no-repeat;
+  transition: background-image 0.5s ease-in-out;
+  background-image: linear-gradient(to top, rgba(5,7,11,1) 5%, rgba(5,7,11,0.4) 75%), linear-gradient(to right, rgba(5,7,11,1), rgba(5,7,11,0.2) 75%), url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1400&q=80");
 }
-.hero h1{ font-size:32px; margin-bottom:8px; }
-.hero p{ color:#b5bdc7; }
+.hero h1{ font-size:28px; margin-bottom:8px; font-weight:700; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
+.hero p{ color:#b5bdc7; font-size:14px; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
 .hero button{ margin-top:15px; padding:12px 20px; border:0; border-radius:7px; background:#00a8ff; color:white; font-weight:bold; cursor:pointer; }
 
 .section{ padding:20px 14px; }
@@ -87,7 +88,7 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
 .row::-webkit-scrollbar{ display:none; }
 .movie{ width:140px; min-width:140px; cursor:pointer; }
 .poster{ width:140px; height:210px; object-fit:cover; border-radius:9px; background:#111820; }
-.movieName{ margin-top:8px; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.movieName{ margin-top:8px; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:600; }
 .movieMeta{ color:#78838e; font-size:11px; margin-top:4px; text-transform:capitalize; }
 
 .modal, .admin, .category-page{ position:fixed; inset:0; display:none; background:rgba(0,0,0,.92); z-index:100; }
@@ -114,7 +115,7 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
 .modalContent p{ color:#aab3bd; line-height:1.4; font-size:13px; margin-bottom:15px; }
 
 .action-btns{ display:flex; gap:10px; margin-bottom:20px; }
-.btn-action{ flex:1; padding:12px; border:0; border-radius:7px; font-weight:bold; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; gap:6px; }
+.btn-action{ flex:1; padding:12px; border:0; border-radius:7px; font-weight:bold; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; gap:6px; text-decoration:none; text-align:center; }
 .watch-btn{ background:#00a8ff; color:white; }
 .watchlist-btn{ background:#29323c; color:white; }
 
@@ -174,7 +175,6 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
   <button class="menuBtn" onclick="toggleSidebar()">☰</button>
 </header>
 
-<!-- SIDEBAR MENU -->
 <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
 <div id="sidebar" class="sidebar">
   <div>
@@ -185,15 +185,12 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
     <div class="sidebar-menu-list">
       <button onclick="showAllHomeMovies()">🏠 Home</button>
       
-      <!-- CATEGORIES -->
       <button onclick="toggleSubmenu('categorySubmenu', 'catMenuIcon')">📂 Categories <span id="catMenuIcon" style="margin-left:auto; font-size:12px;">▼</span></button>
       <div id="categorySubmenu" class="category-submenu"></div>
 
-      <!-- LANGUAGES -->
       <button onclick="toggleSubmenu('languageSubmenu', 'langMenuIcon')">🌐 Languages <span id="langMenuIcon" style="margin-left:auto; font-size:12px;">▼</span></button>
       <div id="languageSubmenu" class="category-submenu"></div>
 
-      <!-- YEARS -->
       <button onclick="toggleSubmenu('yearSubmenu', 'yearMenuIcon')">📅 Years <span id="yearMenuIcon" style="margin-left:auto; font-size:12px;">▼</span></button>
       <div id="yearSubmenu" class="category-submenu"></div>
 
@@ -205,7 +202,6 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
   </div>
 </div>
 
-<!-- ABOUT US MODAL -->
 <div id="aboutModal" class="modal" style="display:none; z-index:350;">
   <div class="modalBox" style="max-height:85vh; padding:20px; font-style:italic; line-height:1.6; font-size:13px; color:#cccccc; background:#000;">
     <button class="close-icon" onclick="closeAboutModal()">✕</button>
@@ -235,7 +231,6 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
 
 <footer>© 2026 HACKO Movies</footer>
 
-<!-- FILTER VIEW ALL PAGE -->
 <div id="categoryPage" class="category-page">
   <div class="category-header">
     <button class="back-btn" onclick="closeCategoryPage()">←</button>
@@ -264,7 +259,7 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
       <p id="modalDescription"></p>
 
       <div class="action-btns">
-        <button class="btn-action watch-btn" onclick="openLink()">▶ Watch Movie</button>
+        <a id="watchMovieAnchor" class="btn-action watch-btn" href="javascript:void(0)" onclick="handleWatchClick()">▶ Watch Movie</a>
         <button class="btn-action watchlist-btn" id="watchlistToggleBtn" onclick="toggleWatchlist()">+ Watchlist</button>
       </div>
 
@@ -302,7 +297,7 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
       <div id="secBanner" class="accordion-body">
         <div class="group"><label>Banner Title</label><input id="bannerTitle" placeholder="Banner movie/show title"></div>
         <div class="group"><label>Banner Description</label><textarea id="bannerDescription" placeholder="Banner description"></textarea></div>
-        <div class="group"><label>TeraBox Link</label><input id="bannerLink" placeholder="https://terabox..."></div>
+        <div class="group"><label>Video Link (Vimeo, TeraBox or Google Drive)</label><input id="bannerLink" placeholder="https://vimeo.com/... or https://terabox..."></div>
         <div class="group"><label>YouTube Trailer Link / ID (Optional)</label><input id="bannerTrailer" placeholder="https://youtube.com/watch?v=XXXX or Video ID"></div>
         <div class="group">
           <label>Select New Hero Banner Image</label>
@@ -334,7 +329,7 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
         </div>
 
         <div class="group"><label>Description</label><textarea id="movieDescription" placeholder="Movie description"></textarea></div>
-        <div class="group"><label>TeraBox Link</label><input id="movieLink" placeholder="https://terabox..."></div>
+        <div class="group"><label>Video Link (Vimeo, TeraBox or Google Drive)</label><input id="movieLink" placeholder="https://vimeo.com/... or https://terabox..."></div>
         <div class="group"><label>YouTube Trailer Link / ID (Optional)</label><input id="movieTrailer" placeholder="https://youtube.com/watch?v=XXXX or Video ID"></div>
         <div class="group">
           <label>Category Name</label>
@@ -496,7 +491,7 @@ function applyBannerMovie(movieData){
   
   const bgUrl = movieData.hero_banner || movieData.thumbnail_url;
   if(bgUrl) {
-    hero.style.backgroundImage = `linear-gradient(to top,#05070b 5%,transparent 75%),linear-gradient(to right,#05070b,transparent 75%),url("${bgUrl}")`;
+    hero.style.backgroundImage = `linear-gradient(to top, rgba(5,7,11,1) 5%, rgba(5,7,11,0.4) 75%), linear-gradient(to right, rgba(5,7,11,1), rgba(5,7,11,0.2) 75%), url("${bgUrl}")`;
   }
   
   if(movieData.title) {
@@ -589,9 +584,7 @@ async function loadMovies(){
   renderMovies();
 }
 
-// DYNAMIC SUBMENUS FOR CATEGORIES, LANGUAGES, AND YEARS
 function renderMenuSubmenus(){
-  // 1. Categories
   const catSubmenu = document.getElementById("categorySubmenu");
   catSubmenu.innerHTML = "";
   const categories = [...new Set(movies.map(m => m.category ? m.category.toLowerCase().trim() : "").filter(Boolean))];
@@ -605,7 +598,6 @@ function renderMenuSubmenus(){
     catSubmenu.appendChild(btn);
   });
 
-  // 2. Languages
   const langSubmenu = document.getElementById("languageSubmenu");
   langSubmenu.innerHTML = "";
   const languages = [...new Set(movies.map(m => m.language ? m.language.toLowerCase().trim() : "").filter(Boolean))];
@@ -619,7 +611,6 @@ function renderMenuSubmenus(){
     langSubmenu.appendChild(btn);
   });
 
-  // 3. Years
   const yearSubmenu = document.getElementById("yearSubmenu");
   yearSubmenu.innerHTML = "";
   const years = [...new Set(movies.map(m => m.year ? m.year.toString().trim() : "").filter(Boolean))];
@@ -641,7 +632,6 @@ function showAllHomeMovies(){
   renderMovies();
 }
 
-/* FIXED CATEGORY ORDER: 1. TRENDING, 2. NEW RELEASED */
 function renderMovies(){
   const container = document.getElementById("dynamicCategoriesContainer");
   container.innerHTML = "";
@@ -810,7 +800,7 @@ async function addOrUpdateMovie(){
   const file = document.getElementById("movieImage").files[0];
 
   if(!title || !link){
-    alert("Please enter movie title and TeraBox link.");
+    alert("Please enter movie title and Video link.");
     return;
   }
 
@@ -971,6 +961,46 @@ function openMovie(movie){
   modal.querySelector('.modalBox').scrollTop = 0;
 }
 
+function handleWatchClick(){
+  if(!selectedMovie || !selectedMovie.terabox_url){
+    alert("No video link provided.");
+    return;
+  }
+
+  let url = selectedMovie.terabox_url;
+
+  // ఒకవేళ విమియో లింక్ అయితే వెబ్‌సైట్ లోపలే ప్లేయర్ ద్వారా ప్లే అవుతుంది
+  if(url.includes("vimeo.com")){
+    const videoId = url.split("/").pop().split("?")[0];
+    const embedUrl = `https://player.vimeo.com/video/${videoId}?autoplay=1`;
+    
+    const iframeElement = document.getElementById("modalTrailerFrame");
+    const imgElement = document.getElementById("modalImage");
+    imgElement.style.display = "none";
+    iframeElement.style.display = "block";
+    iframeElement.src = embedUrl;
+  } 
+  // గూగుల్ డ్రైవ్ లింక్ అయితే ప్రివ్యూ మోడ్‌లో ఓపెన్ అవుతుంది
+  else if(url.includes("drive.google.com")){
+    let embedUrl = url;
+    if(url.includes("/view")) {
+      embedUrl = url.replace("/view", "/preview");
+    } else if(!url.includes("/preview")) {
+      embedUrl = url + (url.endsWith("/") ? "" : "/") + "preview";
+    }
+    
+    const iframeElement = document.getElementById("modalTrailerFrame");
+    const imgElement = document.getElementById("modalImage");
+    imgElement.style.display = "none";
+    iframeElement.style.display = "block";
+    iframeElement.src = embedUrl;
+  } 
+  // టెరాబాక్స్ లింక్ అయితే బయట లింక్‌కి రీడైరెక్ట్ అవుతుంది
+  else {
+    window.location.href = url;
+  }
+}
+
 function renderSimilarMovies(currentMovie){
   const grid = document.getElementById("similarGrid");
   grid.innerHTML = "";
@@ -995,8 +1025,6 @@ function closeMovie(){
   iframeElement.src = "";
   iframeElement.style.display = "none";
 }
-
-function openLink(){ if(selectedMovie) window.open(selectedMovie.terabox_url, "_blank"); }
 
 function toggleWatchlist(){
   if(!selectedMovie) return;
