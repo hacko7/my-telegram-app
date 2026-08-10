@@ -297,7 +297,7 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
       <div id="secBanner" class="accordion-body">
         <div class="group"><label>Banner Title</label><input id="bannerTitle" placeholder="Banner movie/show title"></div>
         <div class="group"><label>Banner Description</label><textarea id="bannerDescription" placeholder="Banner description"></textarea></div>
-        <div class="group"><label>Video Link (Vimeo, TeraBox or Google Drive)</label><input id="bannerLink" placeholder="https://vimeo.com/... or https://terabox..."></div>
+        <div class="group"><label>Video Link (Vimeo, Dailymotion, Archive.org, TeraBox or Drive)</label><input id="bannerLink" placeholder="Paste link here..."></div>
         <div class="group"><label>YouTube Trailer Link / ID (Optional)</label><input id="bannerTrailer" placeholder="https://youtube.com/watch?v=XXXX or Video ID"></div>
         <div class="group">
           <label>Select New Hero Banner Image</label>
@@ -329,7 +329,7 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
         </div>
 
         <div class="group"><label>Description</label><textarea id="movieDescription" placeholder="Movie description"></textarea></div>
-        <div class="group"><label>Video Link (Vimeo, TeraBox or Google Drive)</label><input id="movieLink" placeholder="https://vimeo.com/... or https://terabox..."></div>
+        <div class="group"><label>Video Link (Vimeo, Dailymotion, Archive.org, TeraBox or Drive)</label><input id="movieLink" placeholder="Paste link here..."></div>
         <div class="group"><label>YouTube Trailer Link / ID (Optional)</label><input id="movieTrailer" placeholder="https://youtube.com/watch?v=XXXX or Video ID"></div>
         <div class="group">
           <label>Category Name</label>
@@ -968,19 +968,45 @@ function handleWatchClick(){
   }
 
   let url = selectedMovie.terabox_url;
+  const iframeElement = document.getElementById("modalTrailerFrame");
+  const imgElement = document.getElementById("modalImage");
 
-  // ఒకవేళ విమియో లింక్ అయితే వెబ్‌సైట్ లోపలే ప్లేయర్ ద్వారా ప్లే అవుతుంది
+  // Vimeo లింక్ అయితే
   if(url.includes("vimeo.com")){
     const videoId = url.split("/").pop().split("?")[0];
     const embedUrl = `https://player.vimeo.com/video/${videoId}?autoplay=1`;
-    
-    const iframeElement = document.getElementById("modalTrailerFrame");
-    const imgElement = document.getElementById("modalImage");
     imgElement.style.display = "none";
     iframeElement.style.display = "block";
     iframeElement.src = embedUrl;
   } 
-  // గూగుల్ డ్రైవ్ లింక్ అయితే ప్రివ్యూ మోడ్‌లో ఓపెన్ అవుతుంది
+  // Dailymotion లింక్ అయితే
+  else if(url.includes("dailymotion.com") || url.includes("dai.ly")){
+    let videoId = "";
+    if(url.includes("dailymotion.com/video/")){
+      videoId = url.split("dailymotion.com/video/")[1].split("/")[0].split("?")[0];
+    } else if(url.includes("dai.ly/")){
+      videoId = url.split("dai.ly/")[1].split("?")[0];
+    }
+    if(videoId){
+      const embedUrl = `https://www.dailymotion.com/embed/video/${videoId}?autoplay=1`;
+      imgElement.style.display = "none";
+      iframeElement.style.display = "block";
+      iframeElement.src = embedUrl;
+    } else {
+      window.location.href = url;
+    }
+  }
+  // Archive.org లింక్ అయితే
+  else if(url.includes("archive.org")){
+    let embedUrl = url;
+    if(!url.includes("/embed/")){
+      embedUrl = url.replace("/details/", "/embed/");
+    }
+    imgElement.style.display = "none";
+    iframeElement.style.display = "block";
+    iframeElement.src = embedUrl;
+  }
+  // Google Drive లింక్ అయితే
   else if(url.includes("drive.google.com")){
     let embedUrl = url;
     if(url.includes("/view")) {
@@ -988,14 +1014,11 @@ function handleWatchClick(){
     } else if(!url.includes("/preview")) {
       embedUrl = url + (url.endsWith("/") ? "" : "/") + "preview";
     }
-    
-    const iframeElement = document.getElementById("modalTrailerFrame");
-    const imgElement = document.getElementById("modalImage");
     imgElement.style.display = "none";
     iframeElement.style.display = "block";
     iframeElement.src = embedUrl;
   } 
-  // టెరాబాక్స్ లింక్ అయితే బయట లింక్‌కి రీడైరెక్ట్ అవుతుంది
+  // TeraBox లేదా ఇతర లింక్‌లు అయితే
   else {
     window.location.href = url;
   }
