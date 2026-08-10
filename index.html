@@ -24,7 +24,15 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
 .suggestion-item { padding:10px 12px; border-bottom:1px solid #1a232d; cursor:pointer; font-size:13px; color:#e1e6eb; }
 .suggestion-item:hover { background:#00a8ff; color:white; }
 
-.adminBtn{ border:1px solid #29343e; background:#121a23; color:#00a8ff; padding:9px 12px; border-radius:8px; font-size:18px; cursor:pointer; }
+.menuBtn{ border:1px solid #29343e; background:#121a23; color:#00a8ff; padding:8px 12px; border-radius:8px; font-size:20px; cursor:pointer; }
+
+/* SIDEBAR / DROPDOWN MENU */
+.sidebar{ position:fixed; top:0; right:-280px; width:260px; height:100%; background:#0b0f17; border-left:1px solid #202933; z-index:300; transition:right 0.3s ease; padding:20px; display:flex; flex-direction:column; justify-content:space-between; }
+.sidebar.active{ right:0; }
+.sidebar-overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:299; display:none; }
+.sidebar-header{ display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #1f2a36; padding-bottom:15px; margin-bottom:15px; }
+.sidebar-menu-list button{ width:100%; text-align:left; background:none; border:none; color:#e1e6eb; padding:12px 10px; border-radius:6px; font-size:15px; cursor:pointer; display:flex; align-items:center; gap:10px; }
+.sidebar-menu-list button:hover{ background:#121820; color:#00a8ff; }
 
 .hero{ 
   height:300px; 
@@ -41,54 +49,86 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
 .hero button{ margin-top:15px; padding:12px 20px; border:0; border-radius:7px; background:#00a8ff; color:white; font-weight:bold; cursor:pointer; }
 
 .section{ padding:20px 14px; }
-.title{ font-size:20px; margin-bottom:14px; }
+.section-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+.title{ font-size:20px; text-transform:capitalize; font-weight:bold; }
+.see-more-btn{ color:#00a8ff; font-size:20px; font-weight:bold; cursor:pointer; user-select:none; }
+
 .row{ display:flex; gap:13px; overflow-x:auto; scrollbar-width:none; }
 .row::-webkit-scrollbar{ display:none; }
 .movie{ width:140px; min-width:140px; cursor:pointer; }
 .poster{ width:140px; height:210px; object-fit:cover; border-radius:9px; background:#111820; }
 .movieName{ margin-top:8px; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.movieMeta{ color:#78838e; font-size:11px; margin-top:4px; }
+.movieMeta{ color:#78838e; font-size:11px; margin-top:4px; text-transform:capitalize; }
 
-.modal, .admin{ position:fixed; inset:0; display:none; background:rgba(0,0,0,.88); z-index:100; }
-.modal{ align-items:center; justify-content:center; padding:18px; }
-.modalBox{ width:100%; max-width:480px; background:#111820; border-radius:14px; overflow:hidden; position:relative; max-height:90vh; overflow-y:auto; border:1px solid #202933; }
-.modalMediaContainer{ width:100%; height:250px; background:#000; position:relative; }
+.modal, .admin, .category-page{ position:fixed; inset:0; display:none; background:rgba(0,0,0,.92); z-index:100; }
+.category-page{ background:#05070b; z-index:90; overflow-y:auto; }
+
+.category-header{ height:65px; display:flex; align-items:center; gap:15px; padding:0 15px; background:#080b10; border-bottom:1px solid #202933; position:sticky; top:0; z-index:10; }
+.back-btn{ background:none; border:none; color:white; font-size:22px; cursor:pointer; }
+.category-title-head{ font-size:18px; font-weight:bold; text-transform:capitalize; }
+
+.grid-container{ display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; padding:15px; }
+.grid-movie{ cursor:pointer; width:100%; }
+.grid-poster{ width:100%; height:160px; object-fit:cover; border-radius:8px; background:#111820; }
+
+.modal{ align-items:center; justify-content:center; padding:12px; }
+.modalBox{ width:100%; max-width:550px; background:#0e131a; border-radius:14px; overflow:hidden; position:relative; max-height:92vh; overflow-y:auto; border:1px solid #202933; }
+.modalMediaContainer{ width:100%; height:260px; background:#000; position:relative; }
 .modalImage{ width:100%; height:100%; object-fit:cover; display:block; }
 .modalIframe{ width:100%; height:100%; border:0; display:none; }
 .close-icon{ position:absolute; top:12px; right:12px; background:rgba(0,0,0,0.7); color:white; border:0; width:32px; height:32px; border-radius:50%; font-size:18px; cursor:pointer; z-index:10; }
-.modalContent{ padding:18px; }
+.modalContent{ padding:16px; }
 .modalContent h2{ font-size:22px; margin-bottom:6px; }
 .meta-tags{ display:flex; gap:8px; font-size:12px; color:#00a8ff; margin-bottom:12px; }
-.meta-tags span{ background:#1a232d; padding:3px 8px; border-radius:4px; color:#aab3bd; }
-.modalContent p{ color:#aab3bd; line-height:1.5; font-size:14px; margin-bottom:15px; }
+.meta-tags span{ background:#1a232d; padding:3px 8px; border-radius:4px; color:#aab3bd; text-transform:capitalize; }
+.modalContent p{ color:#aab3bd; line-height:1.4; font-size:13px; margin-bottom:15px; }
 
-.action-btns{ display:flex; flex-direction:column; gap:10px; margin-bottom:15px; }
-.btn-action{ width:100%; padding:12px; border:0; border-radius:7px; font-weight:bold; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; gap:6px; }
+.action-btns{ display:flex; gap:10px; margin-bottom:20px; }
+.btn-action{ flex:1; padding:12px; border:0; border-radius:7px; font-weight:bold; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; gap:6px; }
 .watch-btn{ background:#00a8ff; color:white; }
 .watchlist-btn{ background:#29323c; color:white; }
+
+.similar-section{ margin-top:15px; border-top:1px solid #1f2a36; padding-top:15px; }
+.similar-title{ font-size:16px; font-weight:bold; margin-bottom:12px; color:#e1e6eb; }
+.similar-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; }
+.similar-card{ cursor:pointer; }
+.similar-poster{ width:100%; height:140px; object-fit:cover; border-radius:6px; background:#18212b; }
+.similar-name{ font-size:11px; margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:#cbd5e1; }
 
 .playlist-item{ display:flex; align-items:center; justify-content:space-between; background:#111820; padding:10px 14px; margin-top:8px; border-radius:8px; border:1px solid #1a232d; }
 .playlist-title{ font-size:14px; font-weight:bold; }
 .delete-btn{ background:#e53935; color:white; border:0; padding:6px 10px; border-radius:5px; cursor:pointer; font-size:12px; }
 
-.admin{ background:#070a0f; z-index:200; overflow-y:auto; }
+.admin{ background:#070a0f; z-index:400; overflow-y:auto; }
 .adminHeader{ height:65px; display:flex; align-items:center; justify-content:space-between; padding:0 15px; border-bottom:1px solid #202a33; position:sticky; top:0; background:#070a0f; }
 .adminHeader h2{ color:#00a8ff; }
 .adminContent{ max-width:600px; margin:auto; padding:20px; }
 .group{ margin-bottom:15px; }
 .group label{ display:block; color:#aeb6bf; font-size:13px; margin-bottom:7px; }
-.group input, .group textarea, .group select{ width:100%; padding:12px; background:#111820; color:white; border:1px solid #29343e; border-radius:8px; outline:none; }
+.group input, .group textarea{ width:100%; padding:12px; background:#111820; color:white; border:1px solid #29343e; border-radius:8px; outline:none; }
 .group textarea{ min-height:80px; }
 .preview, .banner-preview{ width:120px; height:180px; object-fit:cover; border-radius:8px; margin-top:10px; display:none; }
 .banner-preview{ width:100%; height:100px; }
 .addBtn, .updateBannerBtn, .changePinBtn{ width:100%; padding:13px; border:0; border-radius:8px; background:#00a8ff; color:white; font-weight:bold; cursor:pointer; margin-top:5px; }
 .changePinBtn{ background:#27ae60; }
+.cancelBtn{ background:#7f8c8d; width:100%; padding:10px; border:0; border-radius:8px; color:white; font-weight:bold; cursor:pointer; margin-top:5px; display:none; }
 .status{ margin-top:12px; padding:10px; background:#111820; border-radius:7px; color:#aeb6bf; }
-.adminItem{ display:flex; align-items:center; gap:10px; background:#111820; padding:10px; margin-top:10px; border-radius:9px; }
+
+.admin-card-section{ background:#101721; border-radius:10px; border:1px solid #202933; margin-bottom:15px; overflow:hidden; }
+.accordion-header{ display:flex; justify-content:space-between; align-items:center; padding:15px; cursor:pointer; user-select:none; }
+.accordion-header h3{ font-size:16px; margin:0; }
+.accordion-icon{ font-size:14px; font-weight:bold; transition:transform 0.3s ease; }
+
+/* Default to Hidden */
+.accordion-body{ padding:15px; border-top:1px solid #202933; display:none; }
+
+.admin-search-input{ width:100%; padding:10px 14px; background:#121820; border:1px solid #29343e; color:white; border-radius:8px; margin-bottom:10px; outline:none; font-size:14px; }
+.adminItem{ display:flex; align-items:center; gap:10px; background:#111820; padding:10px; margin-top:10px; border-radius:9px; border:1px solid #1f2a36; }
 .adminThumb{ width:55px; height:75px; object-fit:cover; border-radius:5px; }
 .adminInfo{ flex:1; }
-.delete{ background:#e53935; color:white; border:0; padding:8px; border-radius:6px; cursor:pointer; }
-.admin-card-section{ background:#101721; padding:15px; border-radius:10px; border:1px solid #202933; margin-bottom:20px; }
+.adminBtns{ display:flex; gap:6px; }
+.editBtn{ background:#f39c12; color:white; border:0; padding:8px 12px; border-radius:6px; cursor:pointer; font-weight:bold; }
+.delete{ background:#e53935; color:white; border:0; padding:8px 12px; border-radius:6px; cursor:pointer; }
 footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
 </style>
 </head>
@@ -101,8 +141,63 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
     <input id="search" class="search" placeholder="Search..." autocomplete="off">
     <div id="suggestions" class="suggestions-box"></div>
   </div>
-  <button class="adminBtn" onclick="openAdmin()">⚙️</button>
+  <button class="menuBtn" onclick="toggleSidebar()">☰</button>
 </header>
+
+<!-- SIDEBAR MENU -->
+<div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+<div id="sidebar" class="sidebar">
+  <div>
+    <div class="sidebar-header">
+      <h3 style="color:#00a8ff;">Menu</h3>
+      <button style="background:none; border:none; color:white; font-size:20px; cursor:pointer;" onclick="toggleSidebar()">✕</button>
+    </div>
+    <div class="sidebar-menu-list">
+      <button onclick="openAboutModal()">ℹ️ About Us</button>
+    </div>
+  </div>
+  <div style="font-size:11px; color:#55606e; text-align:center;">
+    HACKO Movies v2.0
+  </div>
+</div>
+
+<!-- ABOUT US MODAL (Credits Page with Hidden Secret Admin Access) -->
+<div id="aboutModal" class="modal" style="display:none; z-index:350;">
+  <div class="modalBox" style="max-height:85vh; padding:20px; font-style:italic; line-height:1.6; font-size:13px; color:#cccccc; background:#000;">
+    <button class="close-icon" onclick="closeAboutModal()">✕</button>
+    
+    <h2 style="font-style:normal; margin-bottom:10px; color:white;">Thanks to</h2>
+    <hr style="border-color:#333; margin-bottom:15px;">
+
+    <p><b>GDBbrian, Thirumalaisamy.K, Josuearisty, XDA Developers</b> - User support.</p><br>
+    
+    <p><b>David Pérez-Villamil</b> - English proofreading.</p>
+    <p><b>Азат Афлитонов, Андрей Зябко</b> (a@zyabko.ru), <b>Timon, Nikita Titov</b> - Russian translation.</p>
+    <p><b>factorymarks, Ryunosuke Tanaka</b> - Japanese translation.</p>
+    <p><b>Felix Baumann, Dieter Matissek, IrealiTY, Kevin Pang</b> - German translation.</p>
+    <p><b>Thomas Michiels, Jules Seigneur</b> - French translation.</p>
+    <p><b>Niko Strijbol, Joost Hermans, Redah Bening, Rijk van Geijtenbeek, adri3650, Rik Demeyer</b> - Dutch translation.</p>
+    <p><b>Michał Gałężewski, godlesplay</b> - Polish translation.</p>
+    <p><b>Hadi Susanto, Ananto Bambang</b> - Indonesian translation.</p>
+    
+    <!-- Secret Admin Trigger Point -->
+    <p><span onclick="openAdminSecretly()" style="cursor:pointer; color:#cccccc;"><b>Walter Pisano</b></span>, <b>Rocco Casadei (Roccobot), Vladi69, 7Dragon</b> - Italian translation.</p>
+    
+    <p><b>Martin Martinov, Dimitar Andonov</b> - Bulgarian translation.</p>
+    <p><b>Kevin Wang, Misha Kruezhev, Mack Zhang, Guangyang LI</b> - Simplified Chinese translation.</p>
+    <p><b>Ondřej Zima, Petr Škaloud, Jakub Dvořák, R3gi, Gebreus</b> - Czech translation.</p>
+    <p><b>Laszlo Tamas, Hevesi János, takraj</b> - Hungarian translation.</p>
+    <p><b>Mateus Eduardo Araujo da Silva, Leandro Sousa, Henrique Baldy, omartins</b> - Portuguese translation.</p>
+    <p><b>David Pérez-Villamil</b> - Spanish translation.</p>
+    <p><b>Spyros</b> - Greek translation.</p>
+    <p><b>Florin Ungureanu, Viorel Cindea Ginju</b> - Romanian translation.</p>
+    <p><b>Fatih Fırıncı, H. Ender AKAR, Can Yıldız</b> - Turkish translation.</p>
+    <p><b>Rostik ZHukoff, Олександр Сенін, Victor</b> - Ukrainian translation.</p>
+    <p><b>Misha Kruezhev, Zon-Wen Deng, 李冠樺</b> - Chinese Traditional translation.</p>
+    <p><b>NGAA, Rasmussch, Johan Mayner Petersen, Boinkjumper</b> - Danish translation.</p>
+    <p><b>Alex Trav., Elyashiv Sabach</b> - Hebrew translation.</p>
+  </div>
+</div>
 
 <section class="hero" id="heroBanner">
   <div>
@@ -112,20 +207,7 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
   </div>
 </section>
 
-<section class="section">
-  <div class="title">🔥 Trending</div>
-  <div id="trending" class="row"></div>
-</section>
-
-<section class="section">
-  <div class="title">🆕 Latest</div>
-  <div id="latest" class="row"></div>
-</section>
-
-<section class="section">
-  <div class="title">⚡ Action</div>
-  <div id="action" class="row"></div>
-</section>
+<div id="dynamicCategoriesContainer"></div>
 
 <section class="section">
   <div class="title">📌 My Watchlist / Playlist</div>
@@ -135,6 +217,15 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
 </section>
 
 <footer>© 2026 HACKO Movies</footer>
+
+<!-- CATEGORY VIEW ALL PAGE -->
+<div id="categoryPage" class="category-page">
+  <div class="category-header">
+    <button class="back-btn" onclick="closeCategoryPage()">←</button>
+    <div id="categoryPageTitle" class="category-title-head">Category</div>
+  </div>
+  <div id="categoryGrid" class="grid-container"></div>
+</div>
 
 <div id="movieModal" class="modal">
   <div class="modalBox">
@@ -157,6 +248,11 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
         <button class="btn-action watch-btn" onclick="openLink()">▶ Watch Movie</button>
         <button class="btn-action watchlist-btn" id="watchlistToggleBtn" onclick="toggleWatchlist()">+ Watchlist</button>
       </div>
+
+      <div class="similar-section">
+        <div class="similar-title">Similar Shows & Movies</div>
+        <div id="similarGrid" class="similar-grid"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -169,50 +265,73 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
   <div class="adminContent">
     
     <div class="admin-card-section">
-      <h3 style="margin-bottom:12px; color:#27ae60;">🔑 Change Admin PIN</h3>
-      <div class="group"><label>New PIN</label><input id="newPinInput" type="password" placeholder="Enter new PIN"></div>
-      <button class="changePinBtn" onclick="changeAdminPin()">🔒 Update PIN</button>
+      <div class="accordion-header" onclick="toggleAccordion('secPin', 'iconPin')">
+        <h3 style="color:#27ae60;">🔑 Change Admin PIN</h3>
+        <span id="iconPin" class="accordion-icon">▼</span>
+      </div>
+      <div id="secPin" class="accordion-body">
+        <div class="group"><label>New PIN</label><input id="newPinInput" type="password" placeholder="Enter new PIN"></div>
+        <button class="changePinBtn" onclick="changeAdminPin()">🔒 Update PIN</button>
+      </div>
     </div>
 
     <div class="admin-card-section">
-      <h3 style="margin-bottom:12px; color:#00a8ff;">🖼️ Interface Banner Edit</h3>
-      <div class="group"><label>Banner Title</label><input id="bannerTitle" placeholder="Banner movie/show title"></div>
-      <div class="group"><label>Banner Description</label><textarea id="bannerDescription" placeholder="Banner description"></textarea></div>
-      <div class="group"><label>TeraBox Link</label><input id="bannerLink" placeholder="https://terabox..."></div>
-      <div class="group"><label>YouTube Trailer Link / ID (Optional)</label><input id="bannerTrailer" placeholder="https://youtube.com/watch?v=XXXX or Video ID"></div>
-      <div class="group">
-        <label>Select New Hero Banner Image</label>
-        <input id="bannerImage" type="file" accept="image/*">
-        <img id="bannerPreview" class="banner-preview">
+      <div class="accordion-header" onclick="toggleAccordion('secBanner', 'iconBanner')">
+        <h3 style="color:#00a8ff;">🖼️ Interface Banner Edit</h3>
+        <span id="iconBanner" class="accordion-icon">▼</span>
       </div>
-      <button class="updateBannerBtn" onclick="updateBanner()">🖼️ Add Banner Slide</button>
+      <div id="secBanner" class="accordion-body">
+        <div class="group"><label>Banner Title</label><input id="bannerTitle" placeholder="Banner movie/show title"></div>
+        <div class="group"><label>Banner Description</label><textarea id="bannerDescription" placeholder="Banner description"></textarea></div>
+        <div class="group"><label>TeraBox Link</label><input id="bannerLink" placeholder="https://terabox..."></div>
+        <div class="group"><label>YouTube Trailer Link / ID (Optional)</label><input id="bannerTrailer" placeholder="https://youtube.com/watch?v=XXXX or Video ID"></div>
+        <div class="group">
+          <label>Select New Hero Banner Image</label>
+          <input id="bannerImage" type="file" accept="image/*">
+          <img id="bannerPreview" class="banner-preview">
+        </div>
+        <button class="updateBannerBtn" onclick="updateBanner()">🖼️ Add Banner Slide</button>
+      </div>
     </div>
 
     <div class="admin-card-section">
-      <h3 style="margin-bottom:12px; color:#00a8ff;">🎬 Add Movie</h3>
-      <div class="group"><label>Movie Name</label><input id="movieTitle" placeholder="Movie name"></div>
-      <div class="group"><label>Description</label><textarea id="movieDescription" placeholder="Movie description"></textarea></div>
-      <div class="group"><label>TeraBox Link</label><input id="movieLink" placeholder="https://terabox..."></div>
-      <div class="group"><label>YouTube Trailer Link / ID (Optional)</label><input id="movieTrailer" placeholder="https://youtube.com/watch?v=XXXX or Video ID"></div>
-      <div class="group">
-        <label>Category</label>
-        <select id="movieCategory">
-          <option value="trending">🔥 Trending</option>
-          <option value="latest">🆕 Latest</option>
-          <option value="action">⚡ Action</option>
-        </select>
+      <div class="accordion-header" onclick="toggleAccordion('secMovie', 'iconMovie')">
+        <h3 id="formTitleText" style="color:#00a8ff;">🎬 Add Movie</h3>
+        <span id="iconMovie" class="accordion-icon">▼</span>
       </div>
-      <div class="group">
-        <label>Select Poster Photo</label>
-        <input id="movieImage" type="file" accept="image/*">
-        <img id="preview" class="preview">
+      <div id="secMovie" class="accordion-body">
+        <input type="hidden" id="editMovieId">
+        <div class="group"><label>Movie Name</label><input id="movieTitle" placeholder="Movie name"></div>
+        <div class="group"><label>Description</label><textarea id="movieDescription" placeholder="Movie description"></textarea></div>
+        <div class="group"><label>TeraBox Link</label><input id="movieLink" placeholder="https://terabox..."></div>
+        <div class="group"><label>YouTube Trailer Link / ID (Optional)</label><input id="movieTrailer" placeholder="https://youtube.com/watch?v=XXXX or Video ID"></div>
+        <div class="group">
+          <label>Category Name</label>
+          <input id="movieCategory" placeholder="e.g. Action, Trending Now, Comedy...">
+        </div>
+        <div class="group">
+          <label>Select Poster Photo</label>
+          <input id="movieImage" type="file" accept="image/*">
+          <img id="preview" class="preview">
+        </div>
+        <button id="saveMovieBtn" class="addBtn" onclick="addOrUpdateMovie()">➕ Upload & Add Movie</button>
+        <button id="cancelEditBtn" class="cancelBtn" onclick="resetMovieForm()">✕ Cancel Edit</button>
       </div>
-      <button class="addBtn" onclick="addMovie()">➕ Upload & Add Movie</button>
     </div>
 
     <div id="status" class="status">Ready</div>
-    <h3 style="margin-top:30px">🎬 Items List (Movies & Banners)</h3>
-    <div id="adminMovies"></div>
+
+    <div class="admin-card-section" style="margin-top:15px;">
+      <div class="accordion-header" onclick="toggleAccordion('secItems', 'iconItems')">
+        <h3>🎬 Items List (Movies & Banners)</h3>
+        <span id="iconItems" class="accordion-icon">▼</span>
+      </div>
+      <div id="secItems" class="accordion-body">
+        <input id="adminSearchInput" class="admin-search-input" placeholder="🔍 Search items in admin..." oninput="filterAdminItems()">
+        <div id="adminMovies"></div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -221,8 +340,41 @@ const SUPABASE_URL = "https://ubgozfincybhmdzstgdh.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InViZ296ZmluY3liaG1kenN0Z2RoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYyNDc1MjksImV4cCI6MjEwMTgyMzUyOX0.5fQKsV3tv9x76aQ6pB9IQ85SBPtPOszWy8Or-RJD41A";
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+function toggleSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("sidebarOverlay");
+  const isActive = sidebar.classList.contains("active");
+  if (isActive) {
+    sidebar.classList.remove("active");
+    overlay.style.display = "none";
+  } else {
+    sidebar.classList.add("active");
+    overlay.style.display = "block";
+  }
+}
+
+function openAboutModal() {
+  toggleSidebar();
+  document.getElementById("aboutModal").style.display = "flex";
+}
+
+function closeAboutModal() {
+  document.getElementById("aboutModal").style.display = "none";
+}
+
 function getAdminPin() {
   return localStorage.getItem("hacko_admin_pin") || "7890";
+}
+
+function openAdminSecretly() {
+  closeAboutModal();
+  const currentPin = getAdminPin();
+  const enteredPin = prompt("అడ్మిన్ యాక్సెస్ కోసం PIN ఎంటర్ చేయండి:");
+  if(enteredPin === currentPin) {
+    document.getElementById("adminPanel").style.display = "block";
+  } else if(enteredPin !== null) {
+    alert("❌ తప్పు PIN!");
+  }
 }
 
 function changeAdminPin() {
@@ -236,6 +388,18 @@ function changeAdminPin() {
   document.getElementById("newPinInput").value = "";
 }
 
+function toggleAccordion(bodyId, iconId){
+  const body = document.getElementById(bodyId);
+  const icon = document.getElementById(iconId);
+  if(body.style.display === "block"){
+    body.style.display = "none";
+    icon.textContent = "▼";
+  } else {
+    body.style.display = "block";
+    icon.textContent = "▲";
+  }
+}
+
 let movies = [];
 let allDbItems = [];
 let selectedMovie = null;
@@ -244,16 +408,6 @@ let watchlist = [];
 let bannerMovies = [];
 let currentBannerIndex = 0;
 let bannerInterval = null;
-
-function openAdmin(){ 
-  const currentPin = getAdminPin();
-  const enteredPin = prompt("అడ్మిన్ యాక్సెస్ కోసం PIN ఎంటర్ చేయండి:");
-  if(enteredPin === currentPin) {
-    document.getElementById("adminPanel").style.display = "block";
-  } else if(enteredPin !== null) {
-    alert("❌ తప్పు PIN! కేవలం అడ్మిన్‌కు మాత్రమే యాక్సెస్ ఉంటుంది.");
-  }
-}
 
 function closeAdmin(){ document.getElementById("adminPanel").style.display="none"; }
 
@@ -377,14 +531,9 @@ async function loadMovies(){
   }
   
   allDbItems = result.data || [];
-  
-  // 1. సినిమాలను వేరు చేయడం
   movies = allDbItems.filter(m => m.category !== "banner");
   
-  // 2. కేవలం బ్యానర్ అప్‌లోడ్‌లను మాత్రమే స్లైడర్ కింద తీసుకోవడం
   const customBanners = allDbItems.filter(m => m.category === "banner");
-  
-  // అప్‌లోడ్ చేసిన కొత్త బ్యానర్లు ఉంటే వాటినే వాడుతుంది, లేకపోతే మాత్రమే మొదటి సినిమాని వాడుతుంది
   bannerMovies = customBanners.length > 0 ? customBanners : (movies.length > 0 ? [movies[0]] : []);
   
   if(bannerMovies.length > 0){
@@ -397,18 +546,72 @@ async function loadMovies(){
 }
 
 function renderMovies(){
-  document.getElementById("trending").innerHTML = "";
-  document.getElementById("latest").innerHTML = "";
-  document.getElementById("action").innerHTML = "";
+  const container = document.getElementById("dynamicCategoriesContainer");
+  container.innerHTML = "";
 
-  movies.forEach(movie => {
-    const card = createCard(movie);
-    if(movie.category === "trending") document.getElementById("trending").appendChild(card);
-    if(movie.category === "latest") document.getElementById("latest").appendChild(card);
-    if(movie.category === "action") document.getElementById("action").appendChild(card);
+  const categories = [...new Set(movies.map(m => m.category ? m.category.toLowerCase().trim() : "general"))];
+
+  categories.forEach(cat => {
+    const section = document.createElement("section");
+    section.className = "section";
+    
+    const headerDiv = document.createElement("div");
+    headerDiv.className = "section-header";
+
+    const titleDiv = document.createElement("div");
+    titleDiv.className = "title";
+    titleDiv.textContent = cat;
+
+    const seeMoreBtn = document.createElement("div");
+    seeMoreBtn.className = "see-more-btn";
+    seeMoreBtn.innerHTML = "›";
+    seeMoreBtn.onclick = function(){ openCategoryPage(cat); };
+
+    headerDiv.appendChild(titleDiv);
+    headerDiv.appendChild(seeMoreBtn);
+    section.appendChild(headerDiv);
+
+    const rowDiv = document.createElement("div");
+    rowDiv.className = "row";
+
+    movies.filter(m => (m.category ? m.category.toLowerCase().trim() : "general") === cat).forEach(movie => {
+      rowDiv.appendChild(createCard(movie));
+    });
+
+    section.appendChild(rowDiv);
+    container.appendChild(section);
   });
-  renderAdmin();
+
+  renderAdmin(allDbItems);
   renderWatchlist();
+}
+
+function openCategoryPage(categoryName){
+  const page = document.getElementById("categoryPage");
+  const titleHead = document.getElementById("categoryPageTitle");
+  const grid = document.getElementById("categoryGrid");
+
+  titleHead.textContent = categoryName;
+  grid.innerHTML = "";
+
+  const categoryItems = movies.filter(m => (m.category ? m.category.toLowerCase().trim() : "general") === categoryName);
+
+  categoryItems.forEach(movie => {
+    const card = document.createElement("div");
+    card.className = "grid-movie";
+    card.onclick = function(){ openMovie(movie); };
+    card.innerHTML = `
+      <img class="grid-poster" src="${movie.thumbnail_url}" loading="lazy">
+      <div class="movieName">${escapeHTML(movie.title)}</div>
+    `;
+    grid.appendChild(card);
+  });
+
+  page.style.display = "block";
+}
+
+function closeCategoryPage(){
+  document.getElementById("categoryPage").style.display = "none";
 }
 
 function createCard(movie){
@@ -427,75 +630,161 @@ function escapeHTML(text){
   return String(text||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
 }
 
-async function addMovie(){
+function startEditMovie(id) {
+  const item = allDbItems.find(m => String(m.id) === String(id));
+  if(!item) return;
+
+  document.getElementById("editMovieId").value = item.id;
+  document.getElementById("movieTitle").value = item.title || "";
+  document.getElementById("movieDescription").value = item.description || "";
+  document.getElementById("movieLink").value = item.terabox_url || "";
+  document.getElementById("movieTrailer").value = item.trailer_url || "";
+  document.getElementById("movieCategory").value = item.category || "";
+
+  const preview = document.getElementById("preview");
+  preview.src = item.thumbnail_url;
+  preview.style.display = "block";
+
+  document.getElementById("formTitleText").textContent = "✏️ Edit Movie Details";
+  document.getElementById("saveMovieBtn").textContent = "💾 Update Movie";
+  document.getElementById("cancelEditBtn").style.display = "block";
+
+  const secMovie = document.getElementById("secMovie");
+  const iconMovie = document.getElementById("iconMovie");
+  secMovie.style.display = "block";
+  iconMovie.textContent = "▲";
+  secMovie.scrollIntoView({ behavior: 'smooth' });
+}
+
+function resetMovieForm() {
+  document.getElementById("editMovieId").value = "";
+  document.getElementById("movieTitle").value = "";
+  document.getElementById("movieDescription").value = "";
+  document.getElementById("movieLink").value = "";
+  document.getElementById("movieTrailer").value = "";
+  document.getElementById("movieCategory").value = "";
+  document.getElementById("movieImage").value = "";
+  
+  const preview = document.getElementById("preview");
+  preview.src = "";
+  preview.style.display = "none";
+
+  document.getElementById("formTitleText").textContent = "🎬 Add Movie";
+  document.getElementById("saveMovieBtn").textContent = "➕ Upload & Add Movie";
+  document.getElementById("cancelEditBtn").style.display = "none";
+}
+
+async function addOrUpdateMovie(){
+  const editId = document.getElementById("editMovieId").value;
   const title = document.getElementById("movieTitle").value.trim();
   const description = document.getElementById("movieDescription").value.trim();
   const link = document.getElementById("movieLink").value.trim();
   const trailer = document.getElementById("movieTrailer").value.trim();
-  const category = document.getElementById("movieCategory").value;
+  const category = document.getElementById("movieCategory").value.trim().toLowerCase() || "general";
   const file = document.getElementById("movieImage").files[0];
 
-  if(!title || !link || !file){
-    alert("దయచేసి సమాచారాన్ని మరియు పోస్టర్ ఇమేజ్‌ని ఎంటర్ చేయండి");
+  if(!title || !link){
+    alert("దయచేసి మూవీ టైటిల్ మరియు తేరాబాక్స్ లింక్ తప్పనిసరిగా ఎంటర్ చేయండి.");
+    return;
+  }
+
+  if(!editId && !file){
+    alert("కొత్త సినిమాను జోడిస్తున్నప్పుడు ఇమేజ్ ఎంచుకోవడం తప్పనిసరి.");
     return;
   }
 
   try{
-    document.getElementById("status").textContent = "Uploading poster...";
-    const extension = file.name.split(".").pop();
-    const filename = Date.now() + "." + extension;
+    let publicURL = null;
 
-    const upload = await db.storage.from("posters").upload(filename, file, {upsert:false});
-    if(upload.error) throw upload.error;
+    if(file) {
+      document.getElementById("status").textContent = "Uploading image...";
+      const extension = file.name.split(".").pop();
+      const filename = Date.now() + "." + extension;
 
-    const publicURL = db.storage.from("posters").getPublicUrl(filename).data.publicUrl;
+      const upload = await db.storage.from("posters").upload(filename, file, {upsert:true});
+      if(upload.error) throw upload.error;
 
-    document.getElementById("status").textContent = "Saving movie...";
-    const result = await db.from("movies").insert({
-      title: title,
-      description: description,
-      thumbnail_url: publicURL,
-      hero_banner: publicURL,
-      terabox_url: link,
-      trailer_url: trailer,
-      category: category
-    });
+      publicURL = db.storage.from("posters").getPublicUrl(filename).data.publicUrl;
+    }
 
-    if(result.error) throw result.error;
+    if(editId) {
+      document.getElementById("status").textContent = "Updating movie details...";
+      
+      const existingItem = allDbItems.find(m => String(m.id) === String(editId));
+      const updatedUrl = publicURL || (existingItem ? existingItem.thumbnail_url : "");
 
-    document.getElementById("status").textContent = "✅ Movie added!";
-    document.getElementById("movieTitle").value = "";
-    document.getElementById("movieDescription").value = "";
-    document.getElementById("movieLink").value = "";
-    document.getElementById("movieTrailer").value = "";
-    document.getElementById("movieImage").value = "";
-    document.getElementById("preview").style.display = "none";
+      const updateData = {
+        title: title,
+        description: description,
+        thumbnail_url: updatedUrl,
+        hero_banner: updatedUrl,
+        terabox_url: link,
+        trailer_url: trailer,
+        category: category
+      };
 
+      const { data, error } = await db.from("movies").update(updateData).eq("id", editId).select();
+
+      if(error) throw error;
+      document.getElementById("status").textContent = "✅ Movie Updated Successfully!";
+    } else {
+      document.getElementById("status").textContent = "Saving movie...";
+      const { data, error } = await db.from("movies").insert({
+        title: title,
+        description: description,
+        thumbnail_url: publicURL,
+        hero_banner: publicURL,
+        terabox_url: link,
+        trailer_url: trailer,
+        category: category
+      }).select();
+
+      if(error) throw error;
+      document.getElementById("status").textContent = "✅ Movie Added Successfully!";
+    }
+
+    resetMovieForm();
     await loadMovies();
   }catch(error){
-    console.error(error);
+    console.error("Supabase Error:", error);
     document.getElementById("status").textContent = "❌ " + error.message;
   }
 }
 
-function renderAdmin(){
+function renderAdmin(itemsList){
   const box = document.getElementById("adminMovies");
   box.innerHTML = "";
   
-  // అడ్మిన్ ప్యానెల్‌లో సినిమాలు మరియు బ్యానర్‌లు రెండూ కనిపించేలా చేసి డిలీట్ ఆప్షన్ ఇచ్చాను
-  allDbItems.forEach(item => {
+  if(!itemsList || itemsList.length === 0){
+    box.innerHTML = `<p style="color:#78838e; font-size:13px; margin-top:10px;">ఏ ఐటెమ్‌లు లభించలేదు.</p>`;
+    return;
+  }
+
+  itemsList.forEach(item => {
     const div = document.createElement("div");
     div.className = "adminItem";
     div.innerHTML = `
       <img class="adminThumb" src="${item.thumbnail_url}">
       <div class="adminInfo">
         <strong>${escapeHTML(item.title)}</strong><br>
-        <small>${item.category === "banner" ? "🖼️ BANNER SLIDE" : escapeHTML(item.category)}</small>
+        <small style="color:#aab3bd;">${item.category === "banner" ? "🖼️ BANNER SLIDE" : escapeHTML(item.category)}</small>
       </div>
-      <button class="delete" onclick="deleteItem('${item.id}')">Delete</button>
+      <div class="adminBtns">
+        <button class="editBtn" onclick="startEditMovie('${item.id}')">Edit</button>
+        <button class="delete" onclick="deleteItem('${item.id}')">Delete</button>
+      </div>
     `;
     box.appendChild(div);
   });
+}
+
+function filterAdminItems(){
+  const query = document.getElementById("adminSearchInput").value.toLowerCase().trim();
+  const filtered = allDbItems.filter(item => 
+    (item.title && item.title.toLowerCase().includes(query)) || 
+    (item.category && item.category.toLowerCase().includes(query))
+  );
+  renderAdmin(filtered);
 }
 
 async function deleteItem(id){
@@ -537,7 +826,29 @@ function openMovie(movie){
   }
 
   updateWatchlistBtn();
-  document.getElementById("movieModal").style.display = "flex";
+  renderSimilarMovies(movie);
+
+  const modal = document.getElementById("movieModal");
+  modal.style.display = "flex";
+  modal.querySelector('.modalBox').scrollTop = 0;
+}
+
+function renderSimilarMovies(currentMovie){
+  const grid = document.getElementById("similarGrid");
+  grid.innerHTML = "";
+
+  let suggestions = movies.filter(m => m.id !== currentMovie.id);
+  
+  suggestions.slice(0, 6).forEach(m => {
+    const card = document.createElement("div");
+    card.className = "similar-card";
+    card.onclick = function(){ openMovie(m); };
+    card.innerHTML = `
+      <img class="similar-poster" src="${m.thumbnail_url}" loading="lazy">
+      <div class="similar-name">${escapeHTML(m.title)}</div>
+    `;
+    grid.appendChild(card);
+  });
 }
 
 function closeMovie(){ 
@@ -565,7 +876,7 @@ function updateWatchlistBtn(){
   if(!selectedMovie) return;
   const exists = watchlist.some(m => m.id === selectedMovie.id);
   const btn = document.getElementById("watchlistToggleBtn");
-  btn.textContent = exists ? "✓ Added to Watchlist" : "+ Watchlist";
+  btn.textContent = exists ? "✓ Added" : "+ Watchlist";
   btn.style.background = exists ? "#16a34a" : "#29323c";
 }
 
