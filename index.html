@@ -14,7 +14,6 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
 .logo{ color:#00a8ff; font-size:20px; font-weight:bold; }
 .logo span{ color:white; }
 
-/* Search Container with Suggestions */
 .search-container{ position:relative; width:45%; max-width:240px; }
 .search{ width:100%; padding:9px 12px; border-radius:20px; border:1px solid #29343e; background:#121820; color:white; outline:none; }
 .suggestions-box {
@@ -27,7 +26,6 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
 
 .adminBtn{ border:1px solid #29343e; background:#121a23; color:#00a8ff; padding:9px 12px; border-radius:8px; font-size:18px; cursor:pointer; }
 
-/* HERO BANNER WITH SMOOTH SLIDE TRANSITION */
 .hero{ 
   height:300px; 
   display:flex; 
@@ -51,7 +49,6 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
 .movieName{ margin-top:8px; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .movieMeta{ color:#78838e; font-size:11px; margin-top:4px; }
 
-/* HOTSTAR-STYLE MODAL WITH AUTOMATIC TOP PLAYER */
 .modal, .admin{ position:fixed; inset:0; display:none; background:rgba(0,0,0,.88); z-index:100; }
 .modal{ align-items:center; justify-content:center; padding:18px; }
 .modalBox{ width:100%; max-width:480px; background:#111820; border-radius:14px; overflow:hidden; position:relative; max-height:90vh; overflow-y:auto; border:1px solid #202933; }
@@ -65,18 +62,15 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
 .meta-tags span{ background:#1a232d; padding:3px 8px; border-radius:4px; color:#aab3bd; }
 .modalContent p{ color:#aab3bd; line-height:1.5; font-size:14px; margin-bottom:15px; }
 
-/* ACTION BUTTONS */
 .action-btns{ display:flex; flex-direction:column; gap:10px; margin-bottom:15px; }
 .btn-action{ width:100%; padding:12px; border:0; border-radius:7px; font-weight:bold; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; gap:6px; }
 .watch-btn{ background:#00a8ff; color:white; }
 .watchlist-btn{ background:#29323c; color:white; }
 
-/* PLAYLIST SECTION */
 .playlist-item{ display:flex; align-items:center; justify-content:space-between; background:#111820; padding:10px 14px; margin-top:8px; border-radius:8px; border:1px solid #1a232d; }
 .playlist-title{ font-size:14px; font-weight:bold; }
 .delete-btn{ background:#e53935; color:white; border:0; padding:6px 10px; border-radius:5px; cursor:pointer; font-size:12px; }
 
-/* ADMIN PANEL */
 .admin{ background:#070a0f; z-index:200; overflow-y:auto; }
 .adminHeader{ height:65px; display:flex; align-items:center; justify-content:space-between; padding:0 15px; border-bottom:1px solid #202a33; position:sticky; top:0; background:#070a0f; }
 .adminHeader h2{ color:#00a8ff; }
@@ -87,7 +81,8 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
 .group textarea{ min-height:80px; }
 .preview, .banner-preview{ width:120px; height:180px; object-fit:cover; border-radius:8px; margin-top:10px; display:none; }
 .banner-preview{ width:100%; height:100px; }
-.addBtn, .updateBannerBtn{ width:100%; padding:13px; border:0; border-radius:8px; background:#00a8ff; color:white; font-weight:bold; cursor:pointer; margin-top:5px; }
+.addBtn, .updateBannerBtn, .changePinBtn{ width:100%; padding:13px; border:0; border-radius:8px; background:#00a8ff; color:white; font-weight:bold; cursor:pointer; margin-top:5px; }
+.changePinBtn{ background:#27ae60; }
 .status{ margin-top:12px; padding:10px; background:#111820; border-radius:7px; color:#aeb6bf; }
 .adminItem{ display:flex; align-items:center; gap:10px; background:#111820; padding:10px; margin-top:10px; border-radius:9px; }
 .adminThumb{ width:55px; height:75px; object-fit:cover; border-radius:5px; }
@@ -111,9 +106,9 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
 
 <section class="hero" id="heroBanner">
   <div>
-    <h1>HACKO Movies</h1>
-    <p>Watch your favorite movies and videos.</p>
-    <button onclick="watchFirst()">▶ Watch Now</button>
+    <h1 id="heroTitle">HACKO Movies</h1>
+    <p id="heroDesc">Watch your favorite movies and videos.</p>
+    <button onclick="watchCurrentBanner()">▶ Watch Now</button>
   </div>
 </section>
 
@@ -132,7 +127,6 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
   <div id="action" class="row"></div>
 </section>
 
-<!-- PLAYLIST SECTION -->
 <section class="section">
   <div class="title">📌 My Watchlist / Playlist</div>
   <div id="playlistList">
@@ -142,7 +136,6 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
 
 <footer>© 2026 HACKO Movies</footer>
 
-<!-- HOTSTAR STYLE MOVIE MODAL -->
 <div id="movieModal" class="modal">
   <div class="modalBox">
     <button class="close-icon" onclick="closeMovie()">✕</button>
@@ -168,7 +161,6 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
   </div>
 </div>
 
-<!-- ADMIN PANEL -->
 <div id="adminPanel" class="admin">
   <div class="adminHeader">
     <h2>⚙️ Admin Panel</h2>
@@ -176,18 +168,26 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
   </div>
   <div class="adminContent">
     
-    <!-- BANNER EDIT SECTION -->
+    <div class="admin-card-section">
+      <h3 style="margin-bottom:12px; color:#27ae60;">🔑 Change Admin PIN</h3>
+      <div class="group"><label>New PIN</label><input id="newPinInput" type="password" placeholder="Enter new PIN"></div>
+      <button class="changePinBtn" onclick="changeAdminPin()">🔒 Update PIN</button>
+    </div>
+
     <div class="admin-card-section">
       <h3 style="margin-bottom:12px; color:#00a8ff;">🖼️ Interface Banner Edit</h3>
+      <div class="group"><label>Banner Title</label><input id="bannerTitle" placeholder="Banner movie/show title"></div>
+      <div class="group"><label>Banner Description</label><textarea id="bannerDescription" placeholder="Banner description"></textarea></div>
+      <div class="group"><label>TeraBox Link</label><input id="bannerLink" placeholder="https://terabox..."></div>
+      <div class="group"><label>YouTube Trailer Link / ID (Optional)</label><input id="bannerTrailer" placeholder="https://youtube.com/watch?v=XXXX or Video ID"></div>
       <div class="group">
         <label>Select New Hero Banner Image</label>
         <input id="bannerImage" type="file" accept="image/*">
         <img id="bannerPreview" class="banner-preview">
       </div>
-      <button class="updateBannerBtn" onclick="updateBanner()">🖼️ Add Banner Image</button>
+      <button class="updateBannerBtn" onclick="updateBanner()">🖼️ Add Banner Slide</button>
     </div>
 
-    <!-- MOVIE ADD SECTION -->
     <div class="admin-card-section">
       <h3 style="margin-bottom:12px; color:#00a8ff;">🎬 Add Movie</h3>
       <div class="group"><label>Movie Name</label><input id="movieTitle" placeholder="Movie name"></div>
@@ -211,7 +211,7 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
     </div>
 
     <div id="status" class="status">Ready</div>
-    <h3 style="margin-top:30px">🎬 Movies List</h3>
+    <h3 style="margin-top:30px">🎬 Items List (Movies & Banners)</h3>
     <div id="adminMovies"></div>
   </div>
 </div>
@@ -221,15 +221,40 @@ const SUPABASE_URL = "https://ubgozfincybhmdzstgdh.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InViZ296ZmluY3liaG1kenN0Z2RoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYyNDc1MjksImV4cCI6MjEwMTgyMzUyOX0.5fQKsV3tv9x76aQ6pB9IQ85SBPtPOszWy8Or-RJD41A";
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+function getAdminPin() {
+  return localStorage.getItem("hacko_admin_pin") || "7890";
+}
+
+function changeAdminPin() {
+  const newPin = document.getElementById("newPinInput").value.trim();
+  if(!newPin) {
+    alert("దయచేసి క్రొత్త PIN నమోదు చేయండి.");
+    return;
+  }
+  localStorage.setItem("hacko_admin_pin", newPin);
+  alert("✅ PIN విజయవంతంగా మార్చబడింది!");
+  document.getElementById("newPinInput").value = "";
+}
+
 let movies = [];
+let allDbItems = [];
 let selectedMovie = null;
 let watchlist = [];
 
-let bannerList = [];
+let bannerMovies = [];
 let currentBannerIndex = 0;
 let bannerInterval = null;
 
-function openAdmin(){ document.getElementById("adminPanel").style.display="block"; }
+function openAdmin(){ 
+  const currentPin = getAdminPin();
+  const enteredPin = prompt("అడ్మిన్ యాక్సెస్ కోసం PIN ఎంటర్ చేయండి:");
+  if(enteredPin === currentPin) {
+    document.getElementById("adminPanel").style.display = "block";
+  } else if(enteredPin !== null) {
+    alert("❌ తప్పు PIN! కేవలం అడ్మిన్‌కు మాత్రమే యాక్సెస్ ఉంటుంది.");
+  }
+}
+
 function closeAdmin(){ document.getElementById("adminPanel").style.display="none"; }
 
 document.getElementById("movieImage").addEventListener("change", function(){
@@ -256,44 +281,50 @@ document.getElementById("bannerImage").addEventListener("change", function(){
   reader.readAsDataURL(file);
 });
 
-// BANNER SLIDER LOGIC
-async function loadBanner(){
-  try {
-    const result = await db.from("movies")
-      .select("hero_banner")
-      .not("hero_banner", "is", null)
-      .order("created_at", {ascending: false});
-
-    if (result.data && result.data.length > 0) {
-      bannerList = result.data.map(item => item.hero_banner).filter(Boolean);
-      
-      if(bannerList.length > 0){
-        applyBannerImage(bannerList[0]);
-        
-        if(bannerList.length > 1){
-          if(bannerInterval) clearInterval(bannerInterval);
-          bannerInterval = setInterval(slideNextBanner, 4000);
-        }
-      }
-    }
-  } catch(e) {
-    console.log("Banner loading error:", e);
+function startBannerSlider(){
+  if(bannerInterval) clearInterval(bannerInterval);
+  if(bannerMovies.length > 1) {
+    bannerInterval = setInterval(() => {
+      currentBannerIndex = (currentBannerIndex + 1) % bannerMovies.length;
+      applyBannerMovie(bannerMovies[currentBannerIndex]);
+    }, 4000); 
   }
 }
 
-function slideNextBanner(){
-  currentBannerIndex = (currentBannerIndex + 1) % bannerList.length;
-  applyBannerImage(bannerList[currentBannerIndex]);
-}
-
-function applyBannerImage(url){
+function applyBannerMovie(movieData){
+  if(!movieData) return;
   const hero = document.getElementById("heroBanner");
-  hero.style.backgroundImage = `linear-gradient(to top,#05070b 5%,transparent 75%),linear-gradient(to right,#05070b,transparent 75%),url("${url}")`;
+  const heroTitle = document.getElementById("heroTitle");
+  const heroDesc = document.getElementById("heroDesc");
+  
+  const bgUrl = movieData.hero_banner || movieData.thumbnail_url;
+  if(bgUrl) {
+    hero.style.backgroundImage = `linear-gradient(to top,#05070b 5%,transparent 75%),linear-gradient(to right,#05070b,transparent 75%),url("${bgUrl}")`;
+  }
+  
+  if(movieData.title) {
+    heroTitle.textContent = movieData.title;
+    heroDesc.textContent = movieData.description || "Watch your favorite movies and videos.";
+  }
 }
 
-// FIXED BANNER UPLOAD FUNCTION (NO NOT-NULL ERRORS)
+function watchCurrentBanner(){
+  if(bannerMovies.length > 0 && bannerMovies[currentBannerIndex]) {
+    openMovie(bannerMovies[currentBannerIndex]);
+  } else if(movies.length > 0) {
+    openMovie(movies[0]);
+  } else {
+    alert("స్క్రీన్‌పై ప్రదర్శించడానికి ఏమీ లేవు.");
+  }
+}
+
 async function updateBanner(){
+  const title = document.getElementById("bannerTitle").value.trim() || "Featured Banner";
+  const description = document.getElementById("bannerDescription").value.trim();
+  const link = document.getElementById("bannerLink").value.trim() || "#";
+  const trailer = document.getElementById("bannerTrailer").value.trim();
   const file = document.getElementById("bannerImage").files[0];
+
   if(!file){
     alert("దయచేసి క్రొత్త బ్యానర్ ఇమేజ్‌ని ఎంచుకోండి.");
     return;
@@ -312,19 +343,25 @@ async function updateBanner(){
     document.getElementById("status").textContent = "Saving to Database...";
 
     const insertResult = await db.from("movies").insert({
-      title: "Hero Banner Config",
+      title: title,
+      description: description,
       thumbnail_url: bannerUrl,
       hero_banner: bannerUrl,
-      terabox_url: "#",
+      terabox_url: link,
+      trailer_url: trailer,
       category: "banner"
     });
 
     if(insertResult.error) throw insertResult.error;
 
-    document.getElementById("status").textContent = "✅ Banner added to Slideshow!";
+    document.getElementById("status").textContent = "✅ Banner Added Successfully!";
+    document.getElementById("bannerTitle").value = "";
+    document.getElementById("bannerDescription").value = "";
+    document.getElementById("bannerLink").value = "";
+    document.getElementById("bannerTrailer").value = "";
     document.getElementById("bannerImage").value = "";
     document.getElementById("bannerPreview").style.display = "none";
-    await loadBanner();
+    await loadMovies();
   } catch(error) {
     console.error(error);
     document.getElementById("status").textContent = "❌ " + error.message;
@@ -338,7 +375,24 @@ async function loadMovies(){
     document.getElementById("status").textContent = "Database: " + result.error.message;
     return;
   }
-  movies = (result.data || []).filter(m => m.category !== "banner");
+  
+  allDbItems = result.data || [];
+  
+  // 1. సినిమాలను వేరు చేయడం
+  movies = allDbItems.filter(m => m.category !== "banner");
+  
+  // 2. కేవలం బ్యానర్ అప్‌లోడ్‌లను మాత్రమే స్లైడర్ కింద తీసుకోవడం
+  const customBanners = allDbItems.filter(m => m.category === "banner");
+  
+  // అప్‌లోడ్ చేసిన కొత్త బ్యానర్లు ఉంటే వాటినే వాడుతుంది, లేకపోతే మాత్రమే మొదటి సినిమాని వాడుతుంది
+  bannerMovies = customBanners.length > 0 ? customBanners : (movies.length > 0 ? [movies[0]] : []);
+  
+  if(bannerMovies.length > 0){
+    currentBannerIndex = 0;
+    applyBannerMovie(bannerMovies[0]);
+    startBannerSlider();
+  }
+
   renderMovies();
 }
 
@@ -401,6 +455,7 @@ async function addMovie(){
       title: title,
       description: description,
       thumbnail_url: publicURL,
+      hero_banner: publicURL,
       terabox_url: link,
       trailer_url: trailer,
       category: category
@@ -426,23 +481,25 @@ async function addMovie(){
 function renderAdmin(){
   const box = document.getElementById("adminMovies");
   box.innerHTML = "";
-  movies.forEach(movie => {
-    const item = document.createElement("div");
-    item.className = "adminItem";
-    item.innerHTML = `
-      <img class="adminThumb" src="${movie.thumbnail_url}">
+  
+  // అడ్మిన్ ప్యానెల్‌లో సినిమాలు మరియు బ్యానర్‌లు రెండూ కనిపించేలా చేసి డిలీట్ ఆప్షన్ ఇచ్చాను
+  allDbItems.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "adminItem";
+    div.innerHTML = `
+      <img class="adminThumb" src="${item.thumbnail_url}">
       <div class="adminInfo">
-        <strong>${escapeHTML(movie.title)}</strong><br>
-        <small>${escapeHTML(movie.category)}</small>
+        <strong>${escapeHTML(item.title)}</strong><br>
+        <small>${item.category === "banner" ? "🖼️ BANNER SLIDE" : escapeHTML(item.category)}</small>
       </div>
-      <button class="delete" onclick="deleteMovie('${movie.id}')">Delete</button>
+      <button class="delete" onclick="deleteItem('${item.id}')">Delete</button>
     `;
-    box.appendChild(item);
+    box.appendChild(div);
   });
 }
 
-async function deleteMovie(id){
-  if(!confirm("Delete this movie?")) return;
+async function deleteItem(id){
+  if(!confirm("ఈ ఐటెమ్‌ను తొలగించాలా?")) return;
   const result = await db.from("movies").delete().eq("id", id);
   if(result.error){ alert(result.error.message); return; }
   await loadMovies();
@@ -572,12 +629,6 @@ document.addEventListener("click", function(e){
   }
 });
 
-function watchFirst(){
-  if(movies.length) openMovie(movies[0]);
-  else alert("Admin Panel open chesi movie add cheyyandi.");
-}
-
-loadBanner();
 loadMovies();
 </script>
 </body>
