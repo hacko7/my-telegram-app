@@ -109,6 +109,8 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
 .close-icon{ position:absolute; top:12px; right:12px; background:rgba(0,0,0,0.7); color:white; border:0; width:32px; height:32px; border-radius:50%; font-size:18px; cursor:pointer; z-index:10; }
 .modalContent{ padding:16px; }
 .modalContent h2{ font-size:22px; margin-bottom:6px; }
+
+/* Meta tags rearrangement */
 .meta-tags{ display:flex; flex-wrap:wrap; gap:8px; font-size:12px; color:#00a8ff; margin-bottom:12px; }
 .meta-tags span{ background:#1a232d; padding:3px 8px; border-radius:4px; color:#aab3bd; text-transform:capitalize; }
 
@@ -265,15 +267,17 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
 
     <div class="modalContent">
       <h2 id="modalTitle"></h2>
+      
+      <!-- Meta tags ordered: HD Quality, Year, Language, Category -->
       <div class="meta-tags">
         <span>HD Quality</span>
-        <span id="modalCategory">Movie</span>
-        <span id="modalLanguage">Telugu</span>
         <span id="modalYear">2026</span>
+        <span id="modalLanguage">Telugu</span>
+        <span id="modalCategory">Movie</span>
       </div>
 
       <div class="action-btns">
-        <a id="watchMovieAnchor" class="btn-action watch-btn" href="javascript:void(0)" onclick="handleWatchClick()">▶ Watch Movie</a>
+        <a id="watchMovieAnchor" class="btn-action watch-btn" href="javascript:void(0)" onclick="handleWatchClick()">▶ Watch Now</a>
         <button class="btn-action watchlist-btn" id="watchlistToggleBtn" onclick="toggleWatchlist()">+ Watchlist</button>
       </div>
 
@@ -1003,10 +1007,9 @@ function openMovie(movie){
     imgElement.src = movie.thumbnail_url;
   }
 
-  // Dynamic Watch Button Text
-  const platform = getPlatformName(movie.terabox_url);
+  // Set Watch Button text to always say "Watch Now"
   const watchAnchor = document.getElementById("watchMovieAnchor");
-  watchAnchor.innerHTML = `▶ Watch on ${platform}`;
+  watchAnchor.innerHTML = `▶ Watch Now`;
 
   updateWatchlistBtn();
   renderSimilarMovies(movie);
