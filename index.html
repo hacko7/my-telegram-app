@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -110,7 +111,6 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
 .modalContent{ padding:16px; }
 .modalContent h2{ font-size:22px; margin-bottom:6px; }
 
-/* Meta tags rearrangement */
 .meta-tags{ display:flex; flex-wrap:wrap; gap:8px; font-size:12px; color:#00a8ff; margin-bottom:12px; }
 .meta-tags span{ background:#1a232d; padding:3px 8px; border-radius:4px; color:#aab3bd; text-transform:capitalize; }
 
@@ -146,23 +146,6 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
 .changePinBtn{ background:#27ae60; }
 .cancelBtn{ background:#7f8c8d; width:100%; padding:10px; border:0; border-radius:8px; color:white; font-weight:bold; cursor:pointer; margin-top:5px; display:none; }
 .status{ margin-top:12px; padding:10px; background:#111820; border-radius:7px; color:#aeb6bf; }
-
-.link-detector-box {
-  background: #131d28;
-  border: 1px dashed #00a8ff;
-  border-radius: 8px;
-  padding: 10px 14px;
-  margin-bottom: 15px;
-  font-size: 13px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: #aab3bd;
-}
-.link-detector-box span {
-  color: #00a8ff;
-  font-weight: bold;
-}
 
 .admin-card-section{ background:#101721; border-radius:10px; border:1px solid #202933; margin-bottom:15px; overflow:hidden; }
 .accordion-header{ display:flex; justify-content:space-between; align-items:center; padding:15px; cursor:pointer; user-select:none; }
@@ -268,9 +251,8 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
     <div class="modalContent">
       <h2 id="modalTitle"></h2>
       
-      <!-- Meta tags ordered: HD Quality, Year, Language, Category -->
       <div class="meta-tags">
-        <span>HD Quality</span>
+        <span id="modalWatchIn">HD Quality</span>
         <span id="modalYear">2026</span>
         <span id="modalLanguage">Telugu</span>
         <span id="modalCategory">Movie</span>
@@ -313,15 +295,23 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
         <span id="iconBanner" class="accordion-icon">▼</span>
       </div>
       <div id="secBanner" class="accordion-body">
+        <input type="hidden" id="editBannerId">
         <div class="group"><label>Banner Title</label><input id="bannerTitle" placeholder="Banner movie/show title"></div>
         <div class="group"><label>Banner Link (OTT or Video link)</label><input id="bannerLink" placeholder="Paste OTT / Video link here..."></div>
+        
+        <div class="group">
+          <label>Watch In (e.g. Netflix, Aha, MX Player, TeraBox)</label>
+          <input id="bannerWatchIn" placeholder="Enter platform name...">
+        </div>
+
         <div class="group"><label>YouTube Trailer Link / ID (Optional)</label><input id="bannerTrailer" placeholder="https://youtube.com/watch?v=XXXX or Video ID"></div>
         <div class="group">
           <label>Select New Hero Banner Image</label>
           <input id="bannerImage" type="file" accept="image/*">
           <img id="bannerPreview" class="banner-preview">
         </div>
-        <button class="updateBannerBtn" onclick="updateBanner()">🖼️ Add Banner Slide</button>
+        <button id="saveBannerBtn" class="updateBannerBtn" onclick="addOrUpdateBanner()">🖼️ Add Banner Slide</button>
+        <button id="cancelBannerEditBtn" class="cancelBtn" onclick="resetBannerForm()">✕ Cancel Edit</button>
       </div>
     </div>
 
@@ -347,13 +337,12 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
 
         <div class="group">
           <label>Video Link (Netflix, Prime, Aha, Hotstar, TeraBox, Drive, etc.)</label>
-          <input id="movieLink" placeholder="Paste OTT or Video link here..." oninput="checkVideoPlatform()">
+          <input id="movieLink" placeholder="Paste OTT or Video link here...">
         </div>
 
-        <!-- Detected Platform Box -->
-        <div class="link-detector-box">
-          <span>Detected Source:</span>
-          <strong id="detectedPlatformName" style="color: #fff;">None</strong>
+        <div class="group">
+          <label>Watch In (e.g. Netflix, Aha, MX Player, TeraBox)</label>
+          <input id="movieWatchIn" placeholder="Enter platform name...">
         </div>
 
         <div class="group"><label>YouTube Trailer Link / ID (Optional)</label><input id="movieTrailer" placeholder="https://youtube.com/watch?v=XXXX or Video ID"></div>
@@ -500,17 +489,6 @@ document.getElementById("bannerImage").addEventListener("change", function(){
   reader.readAsDataURL(file);
 });
 
-function checkVideoPlatform() {
-  const url = document.getElementById("movieLink").value.trim();
-  const detector = document.getElementById("detectedPlatformName");
-  if(!url) {
-    detector.textContent = "None";
-    return;
-  }
-  const name = getPlatformName(url);
-  detector.textContent = name;
-}
-
 function startBannerSlider(){
   if(bannerInterval) clearInterval(bannerInterval);
   if(bannerMovies.length > 1) {
@@ -548,47 +526,106 @@ function watchCurrentBanner(){
   }
 }
 
-async function updateBanner(){
+function resetBannerForm() {
+  document.getElementById("editBannerId").value = "";
+  document.getElementById("bannerTitle").value = "";
+  document.getElementById("bannerLink").value = "";
+  document.getElementById("bannerWatchIn").value = "";
+  document.getElementById("bannerTrailer").value = "";
+  document.getElementById("bannerImage").value = "";
+  document.getElementById("bannerPreview").style.display = "none";
+
+  document.getElementById("saveBannerBtn").textContent = "🖼️ Add Banner Slide";
+  document.getElementById("cancelBannerEditBtn").style.display = "none";
+}
+
+function startEditBanner(id) {
+  const item = allDbItems.find(m => String(m.id) === String(id));
+  if(!item) return;
+
+  document.getElementById("editBannerId").value = item.id;
+  document.getElementById("bannerTitle").value = item.title || "";
+  document.getElementById("bannerLink").value = item.terabox_url || "";
+  document.getElementById("bannerWatchIn").value = item.watch_in || "";
+  document.getElementById("bannerTrailer").value = item.trailer_url || "";
+
+  const preview = document.getElementById("bannerPreview");
+  preview.src = item.thumbnail_url;
+  preview.style.display = "block";
+
+  document.getElementById("saveBannerBtn").textContent = "💾 Update Banner Slide";
+  document.getElementById("cancelBannerEditBtn").style.display = "block";
+
+  const secBanner = document.getElementById("secBanner");
+  const iconBanner = document.getElementById("iconBanner");
+  secBanner.style.display = "block";
+  iconBanner.textContent = "▲";
+  secBanner.scrollIntoView({ behavior: 'smooth' });
+}
+
+async function addOrUpdateBanner(){
+  const editId = document.getElementById("editBannerId").value;
   const title = document.getElementById("bannerTitle").value.trim() || "Featured Banner";
   const link = document.getElementById("bannerLink").value.trim() || "#";
+  const watchIn = document.getElementById("bannerWatchIn").value.trim();
   const trailer = document.getElementById("bannerTrailer").value.trim();
   const file = document.getElementById("bannerImage").files[0];
 
-  if(!file){
+  if(!editId && !file){
     alert("Please select a new banner image.");
     return;
   }
 
   try {
-    document.getElementById("status").textContent = "Uploading banner...";
-    const extension = file.name.split(".").pop();
-    const filename = "hero-banner-" + Date.now() + "." + extension;
+    let bannerUrl = null;
+    if(file){
+      document.getElementById("status").textContent = "Uploading banner...";
+      const extension = file.name.split(".").pop();
+      const filename = "hero-banner-" + Date.now() + "." + extension;
 
-    const upload = await db.storage.from("posters").upload(filename, file, {upsert: true});
-    if(upload.error) throw upload.error;
+      const upload = await db.storage.from("posters").upload(filename, file, {upsert: true});
+      if(upload.error) throw upload.error;
 
-    const bannerUrl = db.storage.from("posters").getPublicUrl(filename).data.publicUrl;
-    
-    document.getElementById("status").textContent = "Saving to Database...";
+      bannerUrl = db.storage.from("posters").getPublicUrl(filename).data.publicUrl;
+    }
 
-    const insertResult = await db.from("movies").insert({
-      title: title,
-      description: "",
-      thumbnail_url: bannerUrl,
-      hero_banner: bannerUrl,
-      terabox_url: link,
-      trailer_url: trailer,
-      category: "banner"
-    });
+    if(editId) {
+      document.getElementById("status").textContent = "Updating banner...";
+      const existingItem = allDbItems.find(m => String(m.id) === String(editId));
+      const updatedUrl = bannerUrl || (existingItem ? existingItem.thumbnail_url : "");
 
-    if(insertResult.error) throw insertResult.error;
+      const updateData = {
+        title: title,
+        description: "",
+        thumbnail_url: updatedUrl,
+        hero_banner: updatedUrl,
+        terabox_url: link,
+        watch_in: watchIn,
+        trailer_url: trailer,
+        category: "banner"
+      };
 
-    document.getElementById("status").textContent = "✅ Banner Added Successfully!";
-    document.getElementById("bannerTitle").value = "";
-    document.getElementById("bannerLink").value = "";
-    document.getElementById("bannerTrailer").value = "";
-    document.getElementById("bannerImage").value = "";
-    document.getElementById("bannerPreview").style.display = "none";
+      const { error } = await db.from("movies").update(updateData).eq("id", editId).select();
+      if(error) throw error;
+      document.getElementById("status").textContent = "✅ Banner Updated Successfully!";
+    } else {
+      document.getElementById("status").textContent = "Saving to Database...";
+      const { error } = await db.from("movies").insert({
+        title: title,
+        description: "",
+        thumbnail_url: bannerUrl,
+        hero_banner: bannerUrl,
+        terabox_url: link,
+        watch_in: watchIn,
+        trailer_url: trailer,
+        category: "banner"
+      });
+
+      if(error) throw error;
+      document.getElementById("status").textContent = "✅ Banner Added Successfully!";
+    }
+
+    resetBannerForm();
     await loadMovies();
   } catch(error) {
     console.error(error);
@@ -785,10 +822,9 @@ function startEditMovie(id) {
   document.getElementById("movieLanguage").value = item.language || "";
   document.getElementById("movieYear").value = item.year || "";
   document.getElementById("movieLink").value = item.terabox_url || "";
+  document.getElementById("movieWatchIn").value = item.watch_in || "";
   document.getElementById("movieTrailer").value = item.trailer_url || "";
   document.getElementById("movieCategory").value = item.category || "";
-
-  checkVideoPlatform();
 
   const preview = document.getElementById("preview");
   preview.src = item.thumbnail_url;
@@ -811,11 +847,10 @@ function resetMovieForm() {
   document.getElementById("movieLanguage").value = "";
   document.getElementById("movieYear").value = "";
   document.getElementById("movieLink").value = "";
+  document.getElementById("movieWatchIn").value = "";
   document.getElementById("movieTrailer").value = "";
   document.getElementById("movieCategory").value = "";
   document.getElementById("movieImage").value = "";
-  
-  checkVideoPlatform();
 
   const preview = document.getElementById("preview");
   preview.src = "";
@@ -832,6 +867,7 @@ async function addOrUpdateMovie(){
   const language = document.getElementById("movieLanguage").value.trim();
   const year = document.getElementById("movieYear").value.trim();
   const link = document.getElementById("movieLink").value.trim();
+  const watchIn = document.getElementById("movieWatchIn").value.trim();
   const trailer = document.getElementById("movieTrailer").value.trim();
   const category = document.getElementById("movieCategory").value.trim().toLowerCase() || "general";
   const file = document.getElementById("movieImage").files[0];
@@ -862,7 +898,6 @@ async function addOrUpdateMovie(){
 
     if(editId) {
       document.getElementById("status").textContent = "Updating movie details...";
-      
       const existingItem = allDbItems.find(m => String(m.id) === String(editId));
       const updatedUrl = publicURL || (existingItem ? existingItem.thumbnail_url : "");
 
@@ -874,17 +909,17 @@ async function addOrUpdateMovie(){
         thumbnail_url: updatedUrl,
         hero_banner: updatedUrl,
         terabox_url: link,
+        watch_in: watchIn,
         trailer_url: trailer,
         category: category
       };
 
-      const { data, error } = await db.from("movies").update(updateData).eq("id", editId).select();
-
+      const { error } = await db.from("movies").update(updateData).eq("id", editId).select();
       if(error) throw error;
       document.getElementById("status").textContent = "✅ Movie Updated Successfully!";
     } else {
       document.getElementById("status").textContent = "Saving movie...";
-      const { data, error } = await db.from("movies").insert({
+      const { error } = await db.from("movies").insert({
         title: title,
         language: language,
         year: year,
@@ -892,6 +927,7 @@ async function addOrUpdateMovie(){
         thumbnail_url: publicURL,
         hero_banner: publicURL,
         terabox_url: link,
+        watch_in: watchIn,
         trailer_url: trailer,
         category: category
       }).select();
@@ -921,15 +957,16 @@ function renderAdmin(itemsList){
     const div = document.createElement("div");
     div.className = "adminItem";
     const subMeta = [item.language, item.year].filter(Boolean).join(" | ");
+    const isBanner = item.category === "banner";
     
     div.innerHTML = `
       <img class="adminThumb" src="${item.thumbnail_url}">
       <div class="adminInfo">
         <strong>${escapeHTML(item.title)}</strong><br>
-        <small style="color:#aab3bd;">${item.category === "banner" ? "🖼️ BANNER SLIDE" : escapeHTML(item.category)}${subMeta ? ' • ' + escapeHTML(subMeta) : ''}</small>
+        <small style="color:#aab3bd;">${isBanner ? "🖼️ BANNER SLIDE" : escapeHTML(item.category)}${subMeta ? ' • ' + escapeHTML(subMeta) : ''}</small>
       </div>
       <div class="adminBtns">
-        <button class="editBtn" onclick="startEditMovie('${item.id}')">Edit</button>
+        <button class="editBtn" onclick="${isBanner ? `startEditBanner('${item.id}')` : `startEditMovie('${item.id}')`}">Edit</button>
         <button class="delete" onclick="deleteItem('${item.id}')">Delete</button>
       </div>
     `;
@@ -955,25 +992,6 @@ async function deleteItem(id){
   await loadMovies();
 }
 
-function getPlatformName(url) {
-  if (!url) return "None";
-  const lower = url.toLowerCase();
-  if (lower.includes("netflix")) return "Netflix";
-  if (lower.includes("primevideo") || lower.includes("amazon")) return "Amazon Prime";
-  if (lower.includes("aha.video") || lower.includes("aha")) return "Aha";
-  if (lower.includes("hotstar") || lower.includes("disneyplus")) return "Disney+ Hotstar";
-  if (lower.includes("zee5")) return "ZEE5";
-  if (lower.includes("sonyliv")) return "SonyLIV";
-  if (lower.includes("jiocinema") || lower.includes("jio")) return "JioCinema";
-  if (lower.includes("terabox")) return "TeraBox";
-  if (lower.includes("vimeo")) return "Vimeo";
-  if (lower.includes("dailymotion") || lower.includes("dai.ly")) return "Dailymotion";
-  if (lower.includes("archive.org")) return "Archive";
-  if (lower.includes("drive.google.com")) return "Google Drive";
-  if (lower.includes("youtube.com") || lower.includes("youtu.be")) return "YouTube";
-  return "Custom OTT / Web Link";
-}
-
 function openMovie(movie){
   selectedMovie = movie;
   document.getElementById("modalTitle").textContent = movie.title;
@@ -981,6 +999,7 @@ function openMovie(movie){
   
   document.getElementById("modalLanguage").textContent = movie.language || "Telugu";
   document.getElementById("modalYear").textContent = movie.year || "2026";
+  document.getElementById("modalWatchIn").textContent = movie.watch_in || "HD Quality";
   
   const imgElement = document.getElementById("modalImage");
   const iframeElement = document.getElementById("modalTrailerFrame");
@@ -1007,7 +1026,6 @@ function openMovie(movie){
     imgElement.src = movie.thumbnail_url;
   }
 
-  // Set Watch Button text to always say "Watch Now"
   const watchAnchor = document.getElementById("watchMovieAnchor");
   watchAnchor.innerHTML = `▶ Watch Now`;
 
@@ -1186,4 +1204,3 @@ loadMovies();
 </script>
 </body>
 </html>
-
