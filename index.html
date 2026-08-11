@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -145,6 +144,23 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
 .changePinBtn{ background:#27ae60; }
 .cancelBtn{ background:#7f8c8d; width:100%; padding:10px; border:0; border-radius:8px; color:white; font-weight:bold; cursor:pointer; margin-top:5px; display:none; }
 .status{ margin-top:12px; padding:10px; background:#111820; border-radius:7px; color:#aeb6bf; }
+
+.link-detector-box {
+  background: #131d28;
+  border: 1px dashed #00a8ff;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 15px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #aab3bd;
+}
+.link-detector-box span {
+  color: #00a8ff;
+  font-weight: bold;
+}
 
 .admin-card-section{ background:#101721; border-radius:10px; border:1px solid #202933; margin-bottom:15px; overflow:hidden; }
 .accordion-header{ display:flex; justify-content:space-between; align-items:center; padding:15px; cursor:pointer; user-select:none; }
@@ -325,8 +341,19 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
           </div>
         </div>
 
-        <div class="group"><label>Video Link (Netflix, Prime, Aha, Hotstar, TeraBox, Drive, etc.)</label><input id="movieLink" placeholder="Paste OTT or Video link here..."></div>
+        <div class="group">
+          <label>Video Link (Netflix, Prime, Aha, Hotstar, TeraBox, Drive, etc.)</label>
+          <input id="movieLink" placeholder="Paste OTT or Video link here..." oninput="checkVideoPlatform()">
+        </div>
+
+        <!-- Detected Platform Box -->
+        <div class="link-detector-box">
+          <span>Detected Source:</span>
+          <strong id="detectedPlatformName" style="color: #fff;">None</strong>
+        </div>
+
         <div class="group"><label>YouTube Trailer Link / ID (Optional)</label><input id="movieTrailer" placeholder="https://youtube.com/watch?v=XXXX or Video ID"></div>
+        
         <div class="group">
           <label>Category Name</label>
           <input id="movieCategory" placeholder="e.g. trending, new released, action, horror...">
@@ -468,6 +495,17 @@ document.getElementById("bannerImage").addEventListener("change", function(){
   };
   reader.readAsDataURL(file);
 });
+
+function checkVideoPlatform() {
+  const url = document.getElementById("movieLink").value.trim();
+  const detector = document.getElementById("detectedPlatformName");
+  if(!url) {
+    detector.textContent = "None";
+    return;
+  }
+  const name = getPlatformName(url);
+  detector.textContent = name;
+}
 
 function startBannerSlider(){
   if(bannerInterval) clearInterval(bannerInterval);
@@ -746,6 +784,8 @@ function startEditMovie(id) {
   document.getElementById("movieTrailer").value = item.trailer_url || "";
   document.getElementById("movieCategory").value = item.category || "";
 
+  checkVideoPlatform();
+
   const preview = document.getElementById("preview");
   preview.src = item.thumbnail_url;
   preview.style.display = "block";
@@ -771,6 +811,8 @@ function resetMovieForm() {
   document.getElementById("movieCategory").value = "";
   document.getElementById("movieImage").value = "";
   
+  checkVideoPlatform();
+
   const preview = document.getElementById("preview");
   preview.src = "";
   preview.style.display = "none";
@@ -910,7 +952,7 @@ async function deleteItem(id){
 }
 
 function getPlatformName(url) {
-  if (!url) return "Movie";
+  if (!url) return "None";
   const lower = url.toLowerCase();
   if (lower.includes("netflix")) return "Netflix";
   if (lower.includes("primevideo") || lower.includes("amazon")) return "Amazon Prime";
@@ -925,7 +967,7 @@ function getPlatformName(url) {
   if (lower.includes("archive.org")) return "Archive";
   if (lower.includes("drive.google.com")) return "Google Drive";
   if (lower.includes("youtube.com") || lower.includes("youtu.be")) return "YouTube";
-  return "OTT";
+  return "Custom OTT / Web Link";
 }
 
 function openMovie(movie){
@@ -1141,3 +1183,4 @@ loadMovies();
 </script>
 </body>
 </html>
+
