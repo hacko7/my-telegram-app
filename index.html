@@ -970,7 +970,6 @@ function handleWatchClick(){
   const iframeElement = document.getElementById("modalTrailerFrame");
   const imgElement = document.getElementById("modalImage");
 
-  // Vimeo లింక్ అయితే
   if(url.includes("vimeo.com")){
     const videoId = url.split("/").pop().split("?")[0];
     const embedUrl = `https://player.vimeo.com/video/${videoId}?autoplay=1`;
@@ -978,7 +977,6 @@ function handleWatchClick(){
     iframeElement.style.display = "block";
     iframeElement.src = embedUrl;
   } 
-  // Dailymotion లింక్ అయితే
   else if(url.includes("dailymotion.com") || url.includes("dai.ly")){
     let videoId = "";
     if(url.includes("dailymotion.com/video/")){
@@ -995,7 +993,6 @@ function handleWatchClick(){
       window.location.href = url;
     }
   }
-  // Archive.org లింక్ అయితే
   else if(url.includes("archive.org")){
     let embedUrl = url;
     if(!url.includes("/embed/")){
@@ -1005,7 +1002,6 @@ function handleWatchClick(){
     iframeElement.style.display = "block";
     iframeElement.src = embedUrl;
   }
-  // Google Drive లింక్ అయితే
   else if(url.includes("drive.google.com")){
     let embedUrl = url;
     if(url.includes("/view")) {
@@ -1017,7 +1013,6 @@ function handleWatchClick(){
     iframeElement.style.display = "block";
     iframeElement.src = embedUrl;
   } 
-  // TeraBox లేదా ఇతర లింక్‌లు అయితే
   else {
     window.location.href = url;
   }
@@ -1092,8 +1087,6 @@ function removeFromWatchlist(id){
   if(selectedMovie && selectedMovie.id === id) updateWatchlistBtn();
 }
 
-document.getElementById("search").addEventListener("input", function….
-
 document.getElementById("search").addEventListener("input", function(){
   const q = this.value.toLowerCase().trim();
   const sugBox = document.getElementById("suggestions");
@@ -1134,4 +1127,3 @@ loadMovies();
 </script>
 </body>
 </html>
-
