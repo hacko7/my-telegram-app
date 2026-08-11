@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -111,7 +112,6 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
 .modalContent h2{ font-size:22px; margin-bottom:6px; }
 .meta-tags{ display:flex; flex-wrap:wrap; gap:8px; font-size:12px; color:#00a8ff; margin-bottom:12px; }
 .meta-tags span{ background:#1a232d; padding:3px 8px; border-radius:4px; color:#aab3bd; text-transform:capitalize; }
-.modalContent p{ color:#aab3bd; line-height:1.4; font-size:13px; margin-bottom:15px; }
 
 .action-btns{ display:flex; gap:10px; margin-bottom:20px; }
 .btn-action{ flex:1; padding:12px; border:0; border-radius:7px; font-weight:bold; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; gap:6px; text-decoration:none; text-align:center; }
@@ -125,7 +125,7 @@ header{ height:65px; display:flex; align-items:center; justify-content:space-bet
 .similar-poster{ width:100%; height:140px; object-fit:cover; border-radius:6px; background:#18212b; }
 .similar-name{ font-size:11px; margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:#cbd5e1; }
 
-.playlist-item{ display:flex; align-items:center; justify-content:space-between; background:#111820; padding:10px 14px; margin-top:8px; border-radius:8px; border:1px solid #1a232d; }
+.playlist-item{ display:flex; align-items:center; justify-content:between; background:#111820; padding:10px 14px; margin-top:8px; border-radius:8px; border:1px solid #1a232d; }
 .playlist-title{ font-size:14px; font-weight:bold; }
 .delete-btn{ background:#e53935; color:white; border:0; padding:6px 10px; border-radius:5px; cursor:pointer; font-size:12px; }
 
@@ -255,7 +255,6 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
         <span id="modalLanguage">Telugu</span>
         <span id="modalYear">2026</span>
       </div>
-      <p id="modalDescription"></p>
 
       <div class="action-btns">
         <a id="watchMovieAnchor" class="btn-action watch-btn" href="javascript:void(0)" onclick="handleWatchClick()">▶ Watch Movie</a>
@@ -295,8 +294,7 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
       </div>
       <div id="secBanner" class="accordion-body">
         <div class="group"><label>Banner Title</label><input id="bannerTitle" placeholder="Banner movie/show title"></div>
-        <div class="group"><label>Banner Description</label><textarea id="bannerDescription" placeholder="Banner description"></textarea></div>
-        <div class="group"><label>Video Link (Vimeo, Dailymotion, Archive.org, TeraBox or Drive)</label><input id="bannerLink" placeholder="Paste link here..."></div>
+        <div class="group"><label>Banner Link (OTT or Video link)</label><input id="bannerLink" placeholder="Paste OTT / Video link here..."></div>
         <div class="group"><label>YouTube Trailer Link / ID (Optional)</label><input id="bannerTrailer" placeholder="https://youtube.com/watch?v=XXXX or Video ID"></div>
         <div class="group">
           <label>Select New Hero Banner Image</label>
@@ -327,8 +325,7 @@ footer{ text-align:center; color:#626d77; padding:30px; font-size:12px; }
           </div>
         </div>
 
-        <div class="group"><label>Description</label><textarea id="movieDescription" placeholder="Movie description"></textarea></div>
-        <div class="group"><label>Video Link (Vimeo, Dailymotion, Archive.org, TeraBox or Drive)</label><input id="movieLink" placeholder="Paste link here..."></div>
+        <div class="group"><label>Video Link (Netflix, Prime, Aha, Hotstar, TeraBox, Drive, etc.)</label><input id="movieLink" placeholder="Paste OTT or Video link here..."></div>
         <div class="group"><label>YouTube Trailer Link / ID (Optional)</label><input id="movieTrailer" placeholder="https://youtube.com/watch?v=XXXX or Video ID"></div>
         <div class="group">
           <label>Category Name</label>
@@ -495,7 +492,7 @@ function applyBannerMovie(movieData){
   
   if(movieData.title) {
     heroTitle.textContent = movieData.title;
-    heroDesc.textContent = movieData.description || "Watch your favorite movies and videos.";
+    heroDesc.textContent = [movieData.language, movieData.year].filter(Boolean).join(" • ") || "Watch your favorite movies and videos.";
   }
 }
 
@@ -511,7 +508,6 @@ function watchCurrentBanner(){
 
 async function updateBanner(){
   const title = document.getElementById("bannerTitle").value.trim() || "Featured Banner";
-  const description = document.getElementById("bannerDescription").value.trim();
   const link = document.getElementById("bannerLink").value.trim() || "#";
   const trailer = document.getElementById("bannerTrailer").value.trim();
   const file = document.getElementById("bannerImage").files[0];
@@ -535,7 +531,7 @@ async function updateBanner(){
 
     const insertResult = await db.from("movies").insert({
       title: title,
-      description: description,
+      description: "",
       thumbnail_url: bannerUrl,
       hero_banner: bannerUrl,
       terabox_url: link,
@@ -547,7 +543,6 @@ async function updateBanner(){
 
     document.getElementById("status").textContent = "✅ Banner Added Successfully!";
     document.getElementById("bannerTitle").value = "";
-    document.getElementById("bannerDescription").value = "";
     document.getElementById("bannerLink").value = "";
     document.getElementById("bannerTrailer").value = "";
     document.getElementById("bannerImage").value = "";
@@ -747,7 +742,6 @@ function startEditMovie(id) {
   document.getElementById("movieTitle").value = item.title || "";
   document.getElementById("movieLanguage").value = item.language || "";
   document.getElementById("movieYear").value = item.year || "";
-  document.getElementById("movieDescription").value = item.description || "";
   document.getElementById("movieLink").value = item.terabox_url || "";
   document.getElementById("movieTrailer").value = item.trailer_url || "";
   document.getElementById("movieCategory").value = item.category || "";
@@ -772,7 +766,6 @@ function resetMovieForm() {
   document.getElementById("movieTitle").value = "";
   document.getElementById("movieLanguage").value = "";
   document.getElementById("movieYear").value = "";
-  document.getElementById("movieDescription").value = "";
   document.getElementById("movieLink").value = "";
   document.getElementById("movieTrailer").value = "";
   document.getElementById("movieCategory").value = "";
@@ -792,7 +785,6 @@ async function addOrUpdateMovie(){
   const title = document.getElementById("movieTitle").value.trim();
   const language = document.getElementById("movieLanguage").value.trim();
   const year = document.getElementById("movieYear").value.trim();
-  const description = document.getElementById("movieDescription").value.trim();
   const link = document.getElementById("movieLink").value.trim();
   const trailer = document.getElementById("movieTrailer").value.trim();
   const category = document.getElementById("movieCategory").value.trim().toLowerCase() || "general";
@@ -832,7 +824,7 @@ async function addOrUpdateMovie(){
         title: title,
         language: language,
         year: year,
-        description: description,
+        description: "",
         thumbnail_url: updatedUrl,
         hero_banner: updatedUrl,
         terabox_url: link,
@@ -850,7 +842,7 @@ async function addOrUpdateMovie(){
         title: title,
         language: language,
         year: year,
-        description: description,
+        description: "",
         thumbnail_url: publicURL,
         hero_banner: publicURL,
         terabox_url: link,
@@ -917,6 +909,25 @@ async function deleteItem(id){
   await loadMovies();
 }
 
+function getPlatformName(url) {
+  if (!url) return "Movie";
+  const lower = url.toLowerCase();
+  if (lower.includes("netflix")) return "Netflix";
+  if (lower.includes("primevideo") || lower.includes("amazon")) return "Amazon Prime";
+  if (lower.includes("aha.video") || lower.includes("aha")) return "Aha";
+  if (lower.includes("hotstar") || lower.includes("disneyplus")) return "Disney+ Hotstar";
+  if (lower.includes("zee5")) return "ZEE5";
+  if (lower.includes("sonyliv")) return "SonyLIV";
+  if (lower.includes("jiocinema") || lower.includes("jio")) return "JioCinema";
+  if (lower.includes("terabox")) return "TeraBox";
+  if (lower.includes("vimeo")) return "Vimeo";
+  if (lower.includes("dailymotion") || lower.includes("dai.ly")) return "Dailymotion";
+  if (lower.includes("archive.org")) return "Archive";
+  if (lower.includes("drive.google.com")) return "Google Drive";
+  if (lower.includes("youtube.com") || lower.includes("youtu.be")) return "YouTube";
+  return "OTT";
+}
+
 function openMovie(movie){
   selectedMovie = movie;
   document.getElementById("modalTitle").textContent = movie.title;
@@ -924,8 +935,6 @@ function openMovie(movie){
   
   document.getElementById("modalLanguage").textContent = movie.language || "Telugu";
   document.getElementById("modalYear").textContent = movie.year || "2026";
-  
-  document.getElementById("modalDescription").textContent = movie.description || "No description available.";
   
   const imgElement = document.getElementById("modalImage");
   const iframeElement = document.getElementById("modalTrailerFrame");
@@ -951,6 +960,11 @@ function openMovie(movie){
     imgElement.style.display = "block";
     imgElement.src = movie.thumbnail_url;
   }
+
+  // Dynamic Watch Button Text
+  const platform = getPlatformName(movie.terabox_url);
+  const watchAnchor = document.getElementById("watchMovieAnchor");
+  watchAnchor.innerHTML = `▶ Watch on ${platform}`;
 
   updateWatchlistBtn();
   renderSimilarMovies(movie);
